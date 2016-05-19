@@ -106,8 +106,8 @@ sum[1..10]
 f [] = []
 f (x:xs) = f ys ++ [x] ++ f zs
  where
-    ys = [a \| a <- xs, a <= x]
-    zs = [b \| b <- xs, b > x] 
+    ys = [a | a <- xs, a <= x]
+    zs = [b | b <- xs, b > x] 
 \end{lstlisting}
 
 \section{Introduction to Haskell}
@@ -301,8 +301,7 @@ In maths set comprehension is a notation used to construct sets based on a rule,
 \end{lstlisting}
 The comprehension in this example is composed by two parts, the first one is only the declaration, while the second one 'x <- [1..5]' is called a generator as it generates the initial list. Comprehensions can have multiple generators as well as multiple variables for example:
 \begin{lstlisting}
-[(x,y) | x <- [1,2,3], y <- [4,5]]
-\end{lstlisting}
+[(x,y) | x <- [1,2,3], y <- [4,5]] \end{lstlisting}
 The Generators are executed in order so if they are changed the result will probably change. Multiple generators can be thought about as nested loops as the second will be executed once per every execution of the first.
 \subsection{Dependant Generators}
 Some multiple generators comprehensions can be depended as the second generator might take the results of the first one to produce a result, one example of this would be:
@@ -482,7 +481,7 @@ map f (x:xs) = f x : map f xs
 The filter function filters all elements that result true in a function from a list. This is particularly useful as it allows quick and intuitive creation of new lists without the need of the use of generators and list comprehensions.
 \begin{lstlisting}
 -- as we can see in this example the filter function will take only functions that result in a Bool result as it needs a true or false value to decide if the elements stays or not in the list.
-filter ":: (a -> Bool) -> [a] -> [a]
+filter :: (a -> Bool) -> [a] -> [a]
 >filter even [1..10]
 [2,4,6,8,10]
 \end{lstlisting}
