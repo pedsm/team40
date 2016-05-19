@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{PGP}
+\lhead{Object Orientation}
+\rfoot{Page \thepage}
+
+\begin{document}
+
+\title{Object Orientation PGP}
+\author{Rishi Parmar}
+
+\maketitle
+\newpage
+\tableofcontents
+
+
+\section{Lecture 1}
+\subsection{Introduction}
+The first lecture was them comparing OO to our previous knowledge of C. They also introduced a couple of concepts which i'll go over. Since most of the exam relies on understanding what object orientation is, i'll try my best to give a proper overview/understanding on the topic in this section; so this will probably be the longest section but the most important one.
+\end{document}
