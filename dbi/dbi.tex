@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\hypersetup{
+        colorlinks,
+        citecolor=black,
+        filecolor=black,
+        linkcolor=black,
+        urlcolor=black,
+        }
+\usepackage{listings}
+
+\usepackage{color}
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{PGP}
+\lhead{Object Orientation}
+\rfoot{Page \thepage}
+\lfoot{Go to \hyperlink{MyToc}{Table of Contents}}
+\renewcommand{\labelenumii}{\theenumii} 
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+\begin{document}
+
+\title{Object Orientation PGP}
+\author{Rishi Parmar}
+
+\maketitle
+\newpage
+\phantomsection
+\hypertarget{MyToc}{}
+\tableofcontents
+\newpage
