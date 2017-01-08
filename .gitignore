@@ -1,7 +1,7 @@
-*/*.swp
-*/*.swo
-*/*.sw*
-*/*.aux
-*/*.log
-*/*.out
-*/*.toc
+*.swp
+*.swo
+*.sw*
+*.aux
+*.log
+*.out
+*.toc
