@@ -4,6 +4,7 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{fancyhdr}
+\usepackage{amssymb}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks,
@@ -13,7 +14,7 @@
         urlcolor=black,
 }
 \usepackage{listings}
-\lstset{language=C,
+\lstset{language=Java,
     showspaces=false,
     showtabs=false,
     breaklines=true,
@@ -33,15 +34,15 @@
 \definecolor{pgrey}{rgb}{0.46,0.45,0.48}
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{OSC}
-\lhead{Operating Systems \& Concurrency}
+\rhead{SWM}
+\lhead{Software Maintenance}
 \rfoot{Page \thepage}
 \lfoot{Go to \hyperlink{MyToc}{Table of Contents}}
 \renewcommand{\labelenumii}{\theenumii}
 \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
 
 \begin{document}
-\title{Operating Systems \& Concurrency}
+\title{Software Maintenance}
 \author{Rishi Parmar}
 \maketitle
 \newpage
@@ -51,6 +52,20 @@
 \newpage
 
 \section{Introduction}
-what the fu
+First of all, I have no idea why we have an exam for this module. I don't even know what the exam is going to be on so I'm just going to go through some lectures and hope for the best. Anyway, `software Maintenance is changing software after it has been delivered and is in use'. The majority of software maintenance work includes: 
+
+\begin{itemize}
+\item Fixing coding errors
+\item Fixing design problems
+\item Adding additional requirements
+\end{itemize}
+
+Software maintenance can be put into \textbf{three} categories:
+
+\begin{enumerate}
+\item \textbf{Corrective Maintenance} $\longrightarrow$
+\item \textbf{Adaptive Maintenance}
+\item \textbf{Perfective/Performance Maintenance}
+\end{enumerate}
 
 \end{document}
