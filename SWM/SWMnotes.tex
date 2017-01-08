@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+        citecolor=black,
+        filecolor=black,
+        linkcolor=black,
+        urlcolor=black,
+}
+\usepackage{listings}
+\lstset{language=C,
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    showstringspaces=false,
+    breakatwhitespace=true,
+    commentstyle=\color{pgreen},
+    keywordstyle=\color{pblue},
+    stringstyle=\color{pred},
+    basicstyle=\ttfamily,
+    moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
+}
+
+\usepackage{color}
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{OSC}
+\lhead{Operating Systems \& Concurrency}
+\rfoot{Page \thepage}
+\lfoot{Go to \hyperlink{MyToc}{Table of Contents}}
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+
+\begin{document}
+\title{Operating Systems \& Concurrency}
+\author{Rishi Parmar}
+\maketitle
+\newpage
+\phantomsection
+\hypertarget{MyToc}{}
+\tableofcontents
+\newpage
+
+\section{Introduction}
+what the fu
+
+\end{document}
