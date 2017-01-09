@@ -1,6 +1,6 @@
 # Operating Systems and Concurrency
 
-## Lecture 1 introduction
+## [Lecture 1 introduction](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/introduction1%20%281%29.pdf)
 Module goals:
 
 - Introduce the fundamental concepts and principles of an Operating System and Concurrency.
@@ -21,7 +21,7 @@ What you should know by now(Labs):
 - The exam will be 3 of 4 questions accounting for 75% of the module
 - Sample questions and exams are on moodle
 
-#### Past exams
+#### Past exams(links)
 - [Exam 2009-2010](http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071747)
 - [Exam 2010-2011](http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071748)
 - [Exam 2011-2012](http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071749)
@@ -76,6 +76,74 @@ To achieve concurrency and what is called Multi-programming(concurrent code) mos
 One way of visualizing this is User mode occurs on applications and programs where kernel mode occurs on the operating system level.
 
 ### Lecture conclusions
-The OS sits on top of hardware and has full access to its features while providing abstraction for the User/Programmer. It also controls the user by switiching between different modes with different levels of access to the hardware.
+The OS sits on top of hardware and has full access to its features while providing abstraction for the User/Programmer. It also controls the user by switching between different modes with different levels of access to the hardware.
 
 Different OSs have different purposes and implementations but most of the time the focus on the following: Memory management, CPU scheduling, multi-programming, file system, communication, memory management, interrupt handling, GUI, Browser
+
+## [Lecture 2 more introduction](http://moodle.nottingham.ac.uk/pluginfile.php/2862030/mod_resource/content/3/introduction2.pdf)
+When talking about Operating systems we are most of the time thinking about abstraction and because of that is important to understand how the computer fetches, decode and executes data.
+
+![Simplified computer model(Tanenbaum)](img/pic1.png)
+
+### The basic cycle
+As mentioned before CPUs follow a basic cycle which consists of:
+
+- fetching
+- decoding
+- executing
+
+This means that regardless of what the CPU is doing it will always need to get some data, understand it and only them modify it. All CPUs are different as in they have different instruction sets and perform operations slightly differently. However all CPUs have registers as they are essential as they provide really fast memory.
+
+Registers are extremely fast compared to other types of memory. However they are fairly limited on what they can hold and many times are designed to contain important information for the OS such as a program counter and the mode bit.
+
+### Memory management
+Given the following code the results will be most likely different for the print statement, every time the program is ran.
+```c
+#include <stdio.h>
+int iVar = 0;
+void main() {
+	int i = 0;
+	while(i < 10) {
+		iVar++;
+		sleep(2);
+		printf("Address:%u; Value:%d\n",&iVar, iVar);
+		i++;
+	}
+}
+```
+This is because the program is printing the position of the variable in memory. And the C program does not care were their variables are stored it only asks the OS to store it. That means although the code might stay the same the OS will put the data on a different location as it sees fit. This is good as we can forget about where our variables and arrays are and only worry about names which are a lot easier to work with.
+
+#### Physical and Logical Memory
+> This whole following paragraph is overly complicated just know that *physical address = logical address + offset* and look at the picture
+
+Memory is quite easily represented as a array of bits we have a position and a value which can be 0 or 1. This can also easily be translated into a array of bytes depending on how you want to see it. While working with memory as an Operating System you start at position 0 until the MAX(that being the amount of memory the computer). However when dealing with smaller scale programs physical memory is not necessary as we won't(at least we should) require the whole memory of the computer. Thanks to that we have something called logical addressing. This means that at the time you run a program it gets its own memory starting from 0 and going as far as it needs(the OS will define that). For the OS its quite simple to deal with this as it only needs an offset value for example if something in memory 0 logical is on address 1024 in real memory the logical memory at address 1 will be on address 1025 on physical memory. This adds a layer of security as it prevents processes overwriting it other's memory.
+
+![MMU = Memory managment unit](img/pic2.png)
+
+### Interrupts
+An interrupt is a temporary pause on a process. This occur for different reasons such as:
+
+- Timer interrupts caused by the CPU clock(Allows for multi-tasking)
+- I/O interrupts, due to I/O completion or error codes
+- Software generated(Errors)
+
+Because the CPU follows a basic cycle an interrupt will only happen after if has finished it cycle this prevents an interrupt from corrupting data in a register and affecting the process when the interrupt is over. This means the CPU only checks for interrupts after every cycle.
+
+### Hardware
+Moore's law is one of the most famous laws when it comes to computer hardware and it states:
+
+> “The number of transistors on an integrated circuit (chip) doubles roughly every two years”
+
+This means that in theory computer performance should double every two years. However this does not work like that because of many other computing bottlenecks. One of the main reasons this doesn't happen is because having twice as much power doesn't mean we can do two tasks at the same time. At least not in exactly half the time because most of the times we require one task to end before we start the following task.
+
+#### Parallelism
+Parallelism occurs when we have two or more tasks running in parallel(at the exact same time) and those two tasks do not overwrite each other. This is often hard to achieve for a number of reasons. However newer CPUs do a lot of work to allow high level languages to address parallelism in an easier manner. Problems such as load balancing and process scheduling are major areas of work for CPU and OS developers as they need to make parallelism more abstract in order to promote smaller developers to use it efficiently and get the most computing efficiency out of their computers.
+
+> Previous exam question: "Describe how, in your opinion, recent developments in computer architecture and computer design have influenced operating system design?" One thing to consider in this question is that Windows XP didn't support multi threading while today almost every single consumer grade CPU(for PCs) has at least 2 threads or even 2 cores.
+
+#### Memory hierarchy
+This is quite self explanatory but I will mention because it is in the slides. Faster memory is used for processing and slower memory for long term storage following this order:
+
+- CPU cache
+- RAM
+- Hard Drives
