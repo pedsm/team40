@@ -148,7 +148,7 @@ This is quite self explanatory but I will mention because it is in the slides. F
 - RAM
 - Hard Drives
 
-### [Processes 1](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes1.pdf)
+##[Processes 1](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes1.pdf)
 The definition of a process is "the running instance of a program". A program can be seen as passive as it sits on the disk of the computer while a process is one of its running instances. One program can also be split into multiple processes if designed that way. This allows multi-threaded CPUs to run the program in parallel if the OS supports this feature.
 
 ![Representation of a process in memory](img/pic3.png)
@@ -229,3 +229,25 @@ void main()
 }
 ```
 The code can be found on the code directory
+
+## [Processes 2 - Scheduling](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes2.pdf)
+In order for an OS to run different processes in a parallel manner(true or not) we need to have some sort of schedulers which prevents the OS of for example repeat the same process over and over again while other processes need to be ran. However most of the times we also want certain processes to have priority over others. For example a mobile phone OS might prioritise the processes which manage phone calls over third party games as the purpose of the device is to do phone calls.
+
+### Process schedulers
+Process schedulers can come in different types. Those can be categorized in their Time horizon:
+
+- Long term - Applies to new processes, focus on long processes and avoids CS when efficient and controls parallelism. This is common on computer clusters for high performance tasks. Although these types of schedulers focus on getting one task done at a time it will change between processes to achieve an efficient mix of CPU and I/O bound processes and maximise the usage of both. This focus less on responsiveness and multi-tasking and more on efficient usage of resources.
+- Medium term - Controls swapping and focus on a fair split of resources, sometimes delaying some processes and working with smaller subsets of all processes.(Common on modern OSs in conjunction with short term schedulers)
+- Short term - This runs a lot more often then the previous one's it is also closely linked to clock interrupts and I/O interrupts to avoid busy waiting(Running a process that cannot do something because it requires something that is not yet available). This is also responsible for organising the ready queue.
+
+> Exam question "Where do the process schedulers fit in with the state transitions?" Short term is extremely important for I/O and clock interrupts
+
+Don't get confused systems have all of these events schedulers that run at the same time. A single event scheduler most of the times is not efficient you need to make quick decisions at ms intervals but at the same time you need to focus on efficiency. The only unusual type of scheduler in this list is Long term as most common day tasks don't require that amount of efficiency but rather improve response time.
+
+![Queues in an OS, Understand how different schedulers manage different parts of this diagram](img/pic5.png)
+
+
+
+### Evaluation criteria
+
+### Process scheduling algorithms

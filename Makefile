@@ -1,4 +1,5 @@
 all:
+	pandoc -o output/osc.pdf --toc OSC/OSC.md
 	# pandoc -o output/ACE.pdf --latex-engine=xelatex ACE/*.md
 	# pdflatex -output-directory output/ dbi/*.tex
 	# pdflatex -output-directory output/ PGP-FP/*.tex
