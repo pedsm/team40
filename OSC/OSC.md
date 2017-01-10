@@ -246,8 +246,43 @@ Don't get confused systems have all of these events schedulers that run at the s
 
 ![Queues in an OS, Understand how different schedulers manage different parts of this diagram](img/pic5.png)
 
+#### Pre-emptive schedulers
+Schedulers can be differed as well in pre-emptive and non-preemptive schedulers.
 
+A pre-emptive scheduler is a scheduler that has a clock interrupt, that simply means that if a process is takes X amount of time and has not being interrupted then it will stop it to allow other processes to run. This is the most common type of scheduler in modern operating systems.
 
-### Evaluation criteria
+A non-preemptive scheduler is different as a process will only stop if it voluntary says so to the CPU. For example while a process is waiting for a file to be read than it will stop and allow other processes to run.(I/O Interrupt). This is only used on really old Operating systems such as Windows 3.1
 
-### Process scheduling algorithms
+### Performance assessment
+Because we have so many types of schedulers we need some sort of performance measurement so we can benchmark different schedulers. The most common criteria for schedulers are:
+
+> Learn this its ez marks its literally averaging out.
+
+- Response time: When a process starts(usually the average is used for comparison)
+- Turnaround time: When a process finishes(usually the average)
+- Predictability: This makes sure processes are running at roughly the same amount of time between CS.
+
+Some relations that are obvious is that smaller time slices decrease response time while bigger time slices(clock interrupts) will decrease turnaround times considering the CS time.
+
+### Algorithms
+Here are a list of popular algorithms for schedulers.
+
+- FCFS (First come First serve)
+- Shortest job First
+- Round robin
+- Priority queue
+
+#### FCFS
+This is fine as it is considered *fair*, processes created first will get done first. However small processes that could be done a lot before without affecting bigger jobs too much are left behind.
+
+#### Shortest job First
+This focus on finishing jobs quickly and reducing the average turnaround time. However it is not *fair* as a long job started first will only finish after every other small process is done. Even if they are created a long time after the first job. In theory a long process might never finish if new short processes keep being added to the CPU(*starvation* is the fancy name for this).
+
+#### Round robin
+This algorithms is pretty simple it basically means every job is ran for a small amount of time until all processes are fished. Time slices are important to improve Response time and Turnaround.
+> Time is not wasted here if a process finish earlier the next one starts.
+
+##### Priority Queues
+This is a round robin implementation where processes have priorities, higher priorities get executed first while shared priorities are round robin to the end. If priorities are set right for CPU and I/O bound this will yield the best overall results
+
+## (Processes 2)[http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes3%20%281%29.pdf]
