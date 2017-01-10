@@ -147,3 +147,85 @@ This is quite self explanatory but I will mention because it is in the slides. F
 - CPU cache
 - RAM
 - Hard Drives
+
+### [Processes 1](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes1.pdf)
+The definition of a process is "the running instance of a program". A program can be seen as passive as it sits on the disk of the computer while a process is one of its running instances. One program can also be split into multiple processes if designed that way. This allows multi-threaded CPUs to run the program in parallel if the OS supports this feature.
+
+![Representation of a process in memory](img/pic3.png)
+
+What is important to understand about that graph is that a process contain key features in memory. A stack, a heap, a data segment and the program code. Both the stack and heap are placed at opposite sides of the memory allocated as they might need to grow in order for the program to complete it's task.
+
+Because a computer core can only do one instruction at a time modern OSs use a simple technique to simulate multi-tasking by quickly pausing and starting different processes. To achieve this every time a new process is created it is considered a "New" process and as soon as it is ready to be ran it will go into a ready state. The OS will look for processes in a ready state and if there are any it will block the current process(This is done with an interrupt which can also be caused by things such as waiting for input or a file read) for X amount of time and then run the ready process. The blocked process will stay blocked for a certain time to allow other process to be ran. The OS will keep performing that until every program finishes going into an Exit state. This behaviour is explained on the following graph.
+
+![Representation of process states](img/pic4.png)
+
+#### Context switching
+This occurs when the Operating System switches between multiple process in order to generate parallelism. However true parallelism can only occur when you have multiple processors. The actual context switch is the time taken by the CPU to save the current state of the process and switch to the following process. If a context switch is not done properly a process can lose information in registers and corrupt its algorithm.
+
+##### The important maths
+To do context switching we must limit the amount of time the CPU takes on each process. Because context switching has usually a rather static amount of time on the CPU we can define a long time slice for our processes or a short time slice.
+
+- A short time slice means that processes will all run closer together. However because more CS(context switching) is happening the overall time taken by the CPU to run all processes will be longer
+- A longer time slice means that process will have a lower response time as more time is taken by each process making the Operating system less(concurrent) but due to the smaller amount of CS the overall time for all processes to be done will be shorter.
+
+> This right here is why we did that whole COURSEWORK! smaller time slices reduce response time while higher ones reduce turnaround time(Ofc if we implemented a static time for CS) So yeah it was useless
+
+#### Program control block
+The program control block is what takes care of interrupting processes to allow for CS. These are kernel data structures and contain information that can be used by the OS such as:
+
+- Process id(PID, UID, Parent ID)
+- Process control information(State for scheduling)
+- Process state information(Registers PC Stack pointer aka all the stuff saved from the CS)
+
+Because these control low level features of the OS they can only be accessed on kernel mode(logical kernel data structure)
+
+### OS abstraction
+To allow CS and scheduling to work properly the OS stores lots of information such as:
+
+- Process tables(Process control blocks)
+- Memory tables(Where logical memory is)
+- I/O tables(Availability and status of all devices)
+- File tables(File system information)
+
+All this information shouldn't be accessed by the user or the programmer it is all used for abstraction.
+
+#### Using the abstraction
+To actually take advantage of lower level features such as multi threading we can make user mode calls through certain OS dependent libraries to use these functions.
+
+- POSIX(linux library)
+	- fork() - Unix
+	- clone() -Linux
+- WIN32 API (shit OS library)
+	- NTCreateProcess() -Windows(They can't even name their functions properly)
+
+Because the OS will keep switching between multiple processes those need to be terminated with calls such as:
+
+- exit(), kill() - Unix/linux
+- TerminateProcess() - Windows(See they are so bad)
+
+#### YEYY Finally some code
+Here is an example of how to create a multiprocess program on Linux.(Because on windows this is probably like 1000 lines of useless code)
+```c
+#include <stdio.h>
+
+void main()
+{
+	int iStatus;
+	int iPID = fork();
+	if(iPID < 0)
+	{
+		printf("fork error\n");
+	}
+	else if(iPID == 0)
+	{
+		printf("hello from child process\n");
+		execl("/bin/ls", "ls", "-l", 0);
+	}
+	else if(iPID > 0)
+	{
+		waitpid(iPID, &iStatus, 0);
+		printf("hello from parent process\n");
+	}
+}
+```
+The code can be found on the code directory
