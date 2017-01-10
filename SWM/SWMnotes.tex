@@ -191,7 +191,84 @@ The example they used for HashMaps is decent so I'll include that for reference:
 \\\\
 An ez way of thinking of HashMaps is basically an array with a key to each element. The HashMap class implements the Map interface.
 
+\subsection{Object Orientation Important Concepts}
+\subsubsection{Aggregation and Composition}
+\begin{itemize}
+\item \textbf{Aggregation} $\longrightarrow$ The child object can exist independently of the parent. The child exists and is created \emph{outside} of the parent.
+\item \textbf{Composition} $\longrightarrow$ The child object only exists \emph{inside} of the parent object/class. If the parent were to be destroyed, it would indeed be GG for the child also.
+\end{itemize}
 
+They give examples of these concepts in the lecture notes but they're long so I wont include them.
 
+\subsubsection{Inheritance}
+\textbf{Inheritance}: Forming new classes based on existing ones. The parent class being extended is known as the \textbf{Superclass}. Whilst the child class that is inheriting this bahaviour is known as the \textbf{Subclass}.  The Subclass gets a copy of every field and method from the super class (variables/functions). They are said to have an `is-a' relationship, since each Subclass object is an object of the superclass and can be treated as one. A subclass can call its parent's constructor or methods with super().
+
+\subsubsection{Polymorphism}
+Two forms of polymorphism are `Overloading' and `Overriding'.
+
+\begin{itemize}
+\item \textbf{Method Overloading} $\longrightarrow$ When there are multiple methods with the same name in a class. An example is constructor overloading. This is when you have multiple constructors which differ in their arguments. This is resolved at compile time and is known as \emph{static binding} (more on that soon).
+
+\item \textbf{Method Overriding} $\longrightarrow$ When there are methods with the same name declared in the super and the sub class. In this case the method would literally override the other of the same name. This is resolved during runtime which is known as \emph{dynamic binding}.
+\end{itemize}
+Static binding occurs when the compiler knows that there is no way that the method can be overridden. Dynamic binding occurs during overriding, when the compiler can't decide which method to call. Note that if a method is private, static or final they will always be static binding since they can not be overridden. Here is some example code for method overriding:
+\begin{lstlisting}
+class Human{
+   public void walk()
+   {
+       System.out.println("Human walks");
+   }
+}
+class Boy extends Human{
+   public void walk(){
+       System.out.println("Boy walks");
+   }
+   public static void main( String args[]) {
+       //Reference is of parent class
+       Human myobj = new Boy();
+       myobj.walk();
+   }
+}
+\end{lstlisting}
+In this case, the output would be: Boy walks. 
+\newpage
+
+\subsubsection{Abstract classes}
+
+An abstract method is one without a body. As a result, abstract methods must come from classes that inherit other classes.If a class contains an abstract method, the class must too be declared as abstract. Abstraction is used to remove unnecessary implementation details and to focus on functionality.
+
+\subsubsection{Interfaces}
+
+An \textbf{Interface}, in its most common form, is a group of related methods with empty bodies. This makes it similar to an abstract class. An example of an interface class is:
+
+\begin{lstlisting}
+interface Bicycle {
+
+    //  wheel revolutions per minute
+    void changeCadence(int newValue);
+
+    void changeGear(int newValue);
+
+    void speedUp(int increment);
+
+    void applyBrakes(int decrement);
+}
+\end{lstlisting}
+
+If you want to implement this interface, you must use the \emph{implements} key word. Although interfaces are similar to abstract classes, they have several differences: 
+
+\begin{itemize}
+\item An interface isn't actually a class 
+\item Since abstract classes use inheritance, the relationships between the sub/super classes are usually stronger than many interface possibilities
+\item An abstract class can contain instance variables and methods with bodies, but an interface can not
+\item In an interface, all methods must be public
+\item If you ever need to add new methods to an interface, you will have to update all classes that implement it. This is not always necessary for abstract classes
+\end{itemize}
+
+You can implement as many interfaces as you want. In general, abstract classes are better for future proofing, but interfaces are arguably more flexible since a class can implement multiple interfaces. For an excellent explanation and comparison of abstract classes/interfaces, check out \href{http://www.programmerinterview.com/index.php/java-questions/interface-vs-abstract-class/}{\color{blue}{this}} article.
+\newpage
+
+\subsubsection{Packages}
+A Package can be defined as a grouping of related types (classes, interfaces, enumerations and annotations ) providing access protection and name space management. The main reason is to prevent naming conflicts, to control access, and to make searching types such as classes and interfaces a lot easier.
 
 \end{document}
