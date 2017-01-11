@@ -272,7 +272,7 @@ Here are a list of popular algorithms for schedulers.
 - Round robin
 - Priority queue
 
-#### FCFS
+#### FCFS(First come first serve)
 This is fine as it is considered *fair*, processes created first will get done first. However small processes that could be done a lot before without affecting bigger jobs too much are left behind.
 
 #### Shortest job First
@@ -285,4 +285,78 @@ This algorithms is pretty simple it basically means every job is ran for a small
 ##### Priority Queues
 This is a round robin implementation where processes have priorities, higher priorities get executed first while shared priorities are round robin to the end. If priorities are set right for CPU and I/O bound this will yield the best overall results
 
-## (Processes 2)[http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes3%20%281%29.pdf]
+## [Threads](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes3%20%281%29.pdf)
+A process is actually composed of two things. A process is its resources and an execution trace(what the CPU sees the process as) because of this a process can have multiple execution traces allowing the process to do multiple things in parallel. These difference execution traces are called threads.
+
+As you can see in the following image threads have their own registers and stack memory. However All the code Data and files(Heap and I/O) is shared between all of them as they will need to share information between each other at certain points.
+
+![Single threaded process vs multi threaded process](img/pic6.png)
+
+> Processes don't actually have different states but actually their individual threads do as they are the ones that can be ready, blocked or running.
+
+### Thread Context switching
+Switching between different threads of course take some time as registers and the tack must change. However it will be faster than switching between processes, this is because threads do share some things, and those usually are stored in slower memory.
+
+#### Let's get real
+**Alight this is pretty complicated boyz so here is some next level example on how this shit works.**
+
+Imagine Word as a process. It will have two threads an I/O thread responsible for showing what you type in the screen and a different thread for spell check. The I/O thread will wait for keyboard presses or mouse clicks to change your cursor position or the document's content, the cursors is an example of stuff that would stay in stack, meaning that apart from the process that changes stuff in the document no one else cares where the cursor is the spell check will check the spelling on the whole file not where the cursor is so this information can stay with the thread. However the actual contents of the file are going to be stored on the heap this means that both the editor and the spell check thread have access to it and both can work with it.
+
+Now here is the problem if both processes try to change memory in the heap in the same time we might have overwrites. Imagine auto-correct is running while I am typing one process will read the word *"helo"* and change it to *"hello"* by adding another *l*. However between it reading the world *"helo"* and changing it I typed a space character if there is no control over who reads and write to the file the *"hello"* will overwrite my space input. Yes on a text editor scenario this is not a big deal but if we are talking about different things modifying an array at the same time for example we might have duplicates appear or elements disappearing. So shared memory has to be used with caution.
+
+# Break time
+Alright boyz now I am gonna enlighten you with some real knowledge that you can use to look fancy on the exam, and guess what it comes with some next level interactive code examples! You should know this by this point of your degree but clearly you don't or you wouldn't be here. I am gonna teach you the difference between Stack and Heap!
+
+Alright the Stack is pretty simple, it is a static size memory. This means that if you need 15 values that will stay of the same size in your code you put them there, the program has very fast access to this memory and this memory will not change in size. This is extremely important because if you remember the graph on memory the stack always come before your program if it gets bigger it will overwrite the code.
+
+- Stack is defined when the program is compiled(logical memory decision not physical memory)
+- Stack has a fixed size
+- Stack is super fast(because information will never change location)
+- The CPU is very efficient on managing stack
+- The OS will impose limitations on it's size so you don't do dumb stuff
+
+If you are on Linux run the following command to check your stack size(if you aren't on linux, mate you should be)(might work on mac who knows)
+```bash
+$ ulimit -s
+```
+Here is some heavily commented code that I wrote to show you how static sized data stays in the stack while dynamic sized data goes into the stack. Read it run it and understand it because if you don't know this you should. Code is on **code/** directory
+
+```C
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+	/*Lets start by creating two values these two are Ints and therefore
+	go in the stack because their size will never be bigger than sizeof(int)
+	they might change but never stop being an int */
+	int value = 104;
+	int value2 = 125;
+	printf("The two are in the stack at positions:\n%p and \n%p \n", &value, &value2);
+	printf("Position difference = %d \n", (int)(&value2 -  &value));
+	/*You can see that they are about in the same position with a difference
+	 = sizeof(int) Now i am defining a pointer with malloc this is different
+	because I am using malloc I am telling it to have a size of 1 int but I
+	could tell it to have the size of 100 ints in the case of an array.*/
+	int *p = (int *) malloc(sizeof(int));
+	printf("The pointer is at position:%p\n", p);
+	printf("Position difference = %d \n", (int)(&value2 - p));
+	/*With this you will be able to see that the difference between the
+	stack elements are constant because they are always placed in the same
+	spot. While the distance between that and the pointer is always changing
+	because the heap is a lot more dynamic*/
+	return 0;
+}
+```
+Now this is pretty cool but because we need dynamic objects such as dynamic arrays we need the heap so we can create data structures that are only limited by our Memory. The heap of course will be as big as it needs to be. However it will be slower because we need to find stuff as it will keep moving around if it is changing sizes being allocated and deallocated. If you are working with large amounts of data(for example from a file), you should put the data you are working with in the heap do what you need to do and then remove all the unnecessary part. The heap doesn't have a OS set limit but RAM does.
+
+By default C puts variables in the stack and puts pointers in the heap, with enough code and knowledge on how the compiler works you can put all your variables in the heap by using pointers instead of variables, but this would be extremely inefficient in speed.
+
+The heap
+
+- Global for the process
+- No OS limit on size
+- Slower(only relatively still pretty fast)
+- Fragmented memory(Linked lists are not consecutive but rather spread across everywhere)
+- Lots of housekeeping(Memory has to be allocated and freed)
+- Variables can be resized(Dynamic arrays > linked lists)
