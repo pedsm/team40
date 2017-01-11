@@ -360,3 +360,85 @@ The heap
 - Fragmented memory(Linked lists are not consecutive but rather spread across everywhere)
 - Lots of housekeeping(Memory has to be allocated and freed)
 - Variables can be resized(Dynamic arrays > linked lists)
+
+
+### More threads
+By now you are a God of memory management and fully understands the concepts of Heap and Stack, so lets move on to more threads. Now lets see some massive advantages of multi-threading
+
+- Inter-thread communication, they can communicate unlike process(or at least they should communicate)
+- No protection boundaries are necessary(threads have one common goal, one thread won't be malicious to another)
+- Multi-threaded and multi-core CPUs can share the load of a process.
+- Allows for a process to keep running while only one of the threads is interrupted(I/O block)
+
+### Thread implementations
+- User - you hard code threads and work in user mode(so there will be drawbacks, all threads will be blocked on a clock interrupt and no true parallelism)
+	- You can simulate threads on OSs that do not support multi-threading
+- Kernel - you ask your OS to make the OSs for you(kernel mode)
+ 	- This requires an OS that has an implementation of multi-threading
+- Hybrid - a mixture of both
+	- We make proper kernel threads but we can also have User mode threads inside of each kernel thread.
+
+#### POSIX API
+You did the coursework you learned this bit.(most importantly I doubt they will put this on the exam)
+
+## [More process scheduling(AKA the good ones)](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes4.pdf)
+### Multi-level feedback Queues(Windows 7)
+This is a more flexible approach of priority queues it behaves in the same manner but it can be flexible as in:
+
+- Low priority tasks can be done in FCFS(Fairness)
+- Priorities can be dynamic, process that are taking too long and have been ran for a long time can have their priority lowered and vice versa
+- Other scheduler can be implemented if something such as reducing response time is required.
+
+> Exam question: Explain how you would prevent starvation in a multi-level queue scheduling algorithm? Applying dynamic priority a low priority process that has not been started but has waited X amount of time in the queue can have its priority dynamically increased.
+
+One major advantage of this flexible priority is that it allows us to deal with lower level blocks(Inversion of priority problem). Imagine that a low priority job is working on file X, then a high priority job appear and starts to run but it requires file X, it cannot run until the first process is actually done, that means that now the first process is of high priority due to its relation to the second one.
+
+#### Multi-level queues
+On windows 7 Multi-level queues has uses multi-level queues but it does so in two ways. It differs processes in "Real time" and "variable"
+
+- Real time - Processes have fixed priority and are exclusive for kernel tasks and admin operation
+- Variable - Implements the dynamic priority level
+
+In windows 7 regardless of the type of process running a round robin approach is always used in queues. There is code on moodle that shows this behaviour but its overly complicated if you want to take a look here it is **[link](http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/windowsScheduler.zip)** you need windows to run it so I ain't doing that.
+
+#### Relative thread priority(more windows 7)
+Every process has a priority and inside of it every thread will have another priority relative to their parent priority creating a dynamic priority system inside of the process itself.
+
+![Priorities in Windows 7](img/pic7.png)
+
+The maximum priority is 15 and the thread priority is +/- 2 the parent thread(or process).
+
+### Linux scheduling(Finally a proper OS)
+Linux has had a lot of changes on its scheduling but currently and since Kernel 2.6 the process scheduler is called "Completely fair scheduler"(Best OS). Like Multi-level feedback we have two classes:
+
+- Real time
+	- Real time FIFO
+	- Real time Round robin
+- Time sharing(just like windows variables)
+
+> Real time applies FIFO(Don't ask why), First come first serve for the first 40 priority levels. The following 100 applies round robin.
+
+CFS(Complety fair scheduler) has what is called a target latency(the amount of time each process should be run at least once) this value is divided by the number of processes to define the time slice. This way in the target latency every process in the queue will run at least once. The major problem here is that if there are two many processes then the time slice will be two small and it will end up reducing the turnaround time because context switching is taking too long as it happens too often. However linux deals with this by setting a minumun time slice also known as (Minimum granularity).
+
+CFS also uses a weighing scheme, this means that priority is not the main concern but instead it uses priority and  *"used cpu time"* to define the following process. This gives priority where it is needed but instead of dynamic priorities we use weights which ofc are dynamic as used CPU time changes.
+
+> On Geert's word this is *"fantastic"* and all the Linux users here will agree. If you disagree try running tensorflow code on windows.
+
+### Multi process scheduling
+For modern your schedulers require not only defining which process to run next but also in what core. For this we have two main approaches.
+
+- Single level queue(private queue) - each core has its own queue
+	- Good because processes will always run in the same core(CS is reduced as we use the same cache every time) this is called CPU affinity
+	- Load balancing will be off, some cores are going to finish earlier than others
+	- To fix load balancing you will need to swap processes from one to another core if one is too busy.
+- Multi level queue(shared queue) - all cores share a big queue
+	- Load balancing is technically perfect as the free core will always take the next job.
+	- Processes will lose their cached data if they swap cores
+
+#### Types of threads
+Threads also have different types related to how they run in relation to each other.
+
+- Related threads communicate between one and another and therefore want to be running in parallel, for example multi-core equation solving.
+- Unrelated threads do completely different tasks and don't need to run at the same time, for example an auto save function which can run whenever the CPU has time to do it and not necessarily while the user is writing because it doesn't require a change to try to save it will always try to save.
+
+![Example of parallel threads](img/pic8.png)
