@@ -41,11 +41,14 @@ As you can see, the *contiguous* process is unchanged when stored in memory, whe
 
 #### Mono-programming
 
-Mono-programming is when there is one single partition for all user processes.
+Mono-programming is when there is one single partition for all user processes. For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one *user* process. This is how MS-DOS worked. Here is a graphical example for how the memory is split:
 
-- For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one *user* process. This is how MS-DOS worked.
-- This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the process and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.
-- This one process is therefore allocated the entire memory space, and this process is always located in the same address space. This is why there is no *address translation*
+![Mono-programming memory split](img/monoModel.png)
+
+
+
+- This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the memory and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.
+- This one process is therefore allocated across the entire memory space, and this process is always located in the same address space. This is why there is no *address translation*
 - The implementation is very simple, since the memory location is always known. No protection between different processes is required.
 - You can use **overlays** to enable the programmer to use more memory than available. Basically need to hack the program (probably don't need to know about this but just know it used to be OP).
 
@@ -76,14 +79,14 @@ This is when you split the main memory into *static, contiguous and equal sized 
 
 This is when you would partition the memory into non-equal sized partitions instead. For example instead of having 5 partitions with 5M each, you have 5 different partitions with 3M, 4M, 5M, 6M, 7M respectively. This reduces *internal fragmentation* since you are wasting less memory. Note that the partitions are still static and fixed size. This method also has its drawbacks:
 
-- More work needs to be done for the allocation of processes to the partitions. Note that this is still a fixed size and static. 
+- More work needs to be done for the allocation of processes to the partitions. 
 - It assumes that a program knows how much memory it needs. You could have a program that uses dynamic memory allocation and so deciding which partition to put it inside would be a pain in the ass.
 
 The following diagram describes two ways by which the OS can allocate processes in such a partition.
 
 ![Non-Equal Partition Allocation](img/partitionAllocation.png)
 
-- Diagram (a) shows a method where there is one process queue per partition. This means that each partition has a queue of processes that require that amount of memory. In other words, it is first come first served for the processes (you can probably already detect problems with this). One example would be if there were an abundance of processes that required just one partition. This means that only one partition would be busy and so memory usage would be inefficient. 
+- Diagram (a) shows a method where there is one process queue per partition. This means that each partition has a queue of processes that require at least that amount of memory. In other words, it is first come first served for the processes (you can probably already detect problems with this). One example would be if there were an abundance of processes that required just one partition. This means that only one partition would be busy and so memory usage would be inefficient. 
 
-- Diagram (b) uses a single-queue. This means the computer takes each process as it comes and puts it into the smallest available partition. This partially solves the problem mentioned with (a) which is that you may be wasting several partitions. This method however, results in *increased internal fragrmentation*. This is because a 2M process may end up in a 6M partition if that is the smallest partition that is free.
+- Diagram (b) uses a single-queue. This means the computer takes each process as it comes and puts it into the smallest available partition. This partially solves the problem mentioned with for process queue (which is that you may be wasting several partitions). This method however, results in *increased internal fragrmentation*. This is because a 2M process may end up in a 6M partition if that is the smallest partition that is free.
 
