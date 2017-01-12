@@ -160,5 +160,27 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <img src="img/addressRelocation.png" alt="Address Relocation" />
 <p class="caption">Address Relocation</p>
 </div>
+<p>This diagram can be a bit confusing so I will split it up into parts.</p>
+<ul>
+<li>Process A is the process that needs to be allocated into memory.</li>
+<li>That weird thing with <em>MMU</em> written inside it represents the <em>Memory Management Unit</em>. This is basically the part of the OS that converts the logical address into the physical address.</li>
+<li>In an array, the <em>Offset</em> is the distance from the beginning of the array.</li>
+<li>The top partition is dedicated to the OS/kernel.</li>
+</ul>
+<p>The <em>Memory Management Unit</em> uses the <em>Offset</em> value to calculate where the nearest available memory is, and then uses this knowledge to place the process A into this partition.</p>
+<p>They have another slide to remind us of the difference between logical and physical memory addresses. It seems important so make sure you understand it. They are two separate things. The logical address is what is seen by the process. This logical address space is then mapped onto the machines physical address space by the OS.</p>
+<h3 id="relocation-and-protection-approaches">Relocation and Protection Approaches</h3>
+<p>You may be wondering about <em>when</em> the <strong>relocation</strong> needs to occur. There are three approaches to this:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Static</strong> relocation at <strong>compile time</strong> - This is impractical for multi-processing systems because you don't know which partitions in main memory are free or not. It is therefore a shitty YOLO approach and so I doubt it will come up in the test.</p></li>
+<li><p><strong>Dynamic</strong> relocation at <strong>load time</strong> - This is similar to the address relocation figure shown earlier where an <em>offset</em> is added to every logical address to account for its physical location in memory. This method however, doesn't account for <strong>swapping</strong> (will be explained later). For this reason, the loading process will be slow if relocation is done at load time.</p></li>
+<li><p><strong>Dynamic</strong> relocation at <strong>runtime</strong> - This is the fastest method but is more difficult and requires special hardware support.</p></li>
+</ol>
+<h4 id="dynamic-runtime-relocation">Dynamic Runtime Relocation</h4>
+<p>In order to achieve relocation at runtime, it relies on using two <em>registers</em>. These registers are special-purpose and so are only used for these tasks. They are:</p>
+<ol style="list-style-type: decimal">
+<li>The <strong>base register</strong> - Stores the <em>start address</em> of the partition. In other words, it uses the <em>offset</em> value mentioned previously. At <em>runtime</em>, a physical address is generated based on the value stored in the base register.</li>
+<li>The <strong>limit register</strong> - Stores the required size of the partition. At runtime, the resulting physical address is <em>compared</em> against the value in the limit register. This acts as a form of protection, as it ensures that the process is getting the correct amount of memory it needs and no less.</li>
+</ol>
 </body>
 </html>

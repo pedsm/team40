@@ -129,3 +129,33 @@ This code is simply printing the address and value of an incrementing variable. 
 
 ![Address Relocation](img/addressRelocation.png)
 
+This diagram can be a bit confusing so I will split it up into parts.
+
+- Process A is the process that needs to be allocated into memory.
+- That weird thing with *MMU* written inside it represents the *Memory Management Unit*. This is basically the part of the OS that converts the logical address into the physical address.
+- In an array, the *Offset* is the distance from the beginning of the array.
+- The top partition is dedicated to the OS/kernel.
+
+The *Memory Management Unit* uses the *Offset* value to calculate where the nearest available memory is, and then uses this knowledge to place the process A into this partition.
+
+They have another slide to remind us of the difference between logical and physical memory addresses. It seems important so make sure you understand it. They are two separate things. The logical address is what is seen by the process. This logical address space is then mapped onto the machines physical address space by the OS.
+
+###Relocation and Protection Approaches
+
+You may be wondering about *when* the **relocation** needs to occur. There are three approaches to this:
+
+1. **Static** relocation at **compile time** - This is impractical for multi-processing systems because you don't know which partitions in main memory are free or not. It is therefore a shitty YOLO approach and so I doubt it will come up in the test.
+
+2. **Dynamic** relocation at **load time** - This is similar to the address relocation figure shown earlier where an *offset* is added to every logical address to account for its physical location in memory. This method however, doesn't account for **swapping** (will be explained later). For this reason, the loading process will be slow if relocation is done at load time.
+
+3. **Dynamic** relocation at **runtime** - This is the fastest method but is more difficult and requires special hardware support.
+
+#### Dynamic Runtime Relocation
+
+In order to achieve relocation at runtime, it relies on using two *registers*. These registers are special-purpose and so are only used for these tasks. They are:
+
+1. The **base register** - Stores the *start address* of the partition. In other words, it uses the *offset* value mentioned previously. At *runtime*, a physical address is generated based on the value stored in the base register.
+2. The **limit register** - Stores the required size of the partition. At runtime, the resulting physical address is *compared* against the value in the limit register. This acts as a form of protection, as it ensures that the process is getting the correct amount of memory it needs and no less.
+
+
+

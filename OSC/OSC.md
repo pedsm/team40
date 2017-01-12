@@ -442,3 +442,14 @@ Threads also have different types related to how they run in relation to each ot
 - Unrelated threads do completely different tasks and don't need to run at the same time, for example an auto save function which can run whenever the CPU has time to do it and not necessarily while the user is writing because it doesn't require a change to try to save it will always try to save.
 
 ![Example of parallel threads](img/pic8.png)
+
+This diagram can be a bit confusing so I will split it up into parts.
+
+- Process A is the process that needs to be allocated into memory.
+- That weird thing with *MMU* written inside it represents the *Memory Management Unit*. This is basically the part of the OS that converts the logical address into the physical address.
+- In an array, the *Offset* is the distance from the beginning of the array.
+- The top partition is dedicated to the OS/kernel.
+
+The *Memory Management Unit* uses the *Offset* value to calculate where the nearest available memory is, and then uses this knowledge to place the process A into this partition.
+
+They have another slide to remind us of the difference between logical and physical memory addresses. It seems important so make sure you understand it. They are two separate things. The logical address is what is seen by the process. This logical address space is then mapped onto the machines physical address space by the OS.
