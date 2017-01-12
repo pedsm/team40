@@ -13,7 +13,36 @@
 <ul>
 <li>Introduction to memory management</li>
 <li><strong>Modelling</strong> of multi-programming</li>
-<li>Memory management based on <strong>fixed partitioning</strong> test</li>
+<li>Memory management based on <strong>fixed partitioning</strong></li>
 </ul>
+<h3 id="memory-hierarchies">Memory Hierarchies</h3>
+<p>There are several different types of computer memory, and these can be arranged into a hierarchy. This hierarchy and the reasons behind it influence how memory is managed in a system. Here is a detailed view of the hierarchy (don't need to memorise).</p>
+<div class="figure">
+<img src="img/memoryHierarchy.png" alt="Memory Hierarchy" />
+<p class="caption">Memory Hierarchy</p>
+</div>
+<ul>
+<li><strong>Registers</strong> and <strong>cache</strong> - These are fast because they are located close to the CPU. There are sub-levels of cache memory called L1, L2, L3. These have slightly increasing speeds.</li>
+<li>Main memory - This is basically <strong>RAM</strong>. Main memory isn't as fast because it takes a significant time for the CPU to access it. This time period is known as latency.</li>
+<li><strong>Disks</strong> - Includes things like Hard Drives. Used for important information. Is much <em>cheaper</em> than other types.</li>
+</ul>
+<p>The operating system's job is to provide a memory abstraction. But how does it do this?</p>
+<h3 id="os-responsibilities">OS Responsibilities</h3>
+<ul>
+<li>The OS needs to <strong>allocate</strong> memory, and then keep track of whether or not the memory is being used. If it is not being used, it must <strong>deallocate</strong> this memory.</li>
+<li>It needs to <em>control access</em> when multiprogramming is applied. In other words it needs to prioritise certain tasks.</li>
+<li>It needs to be able to transparently move data from memory to disk and vice versa.</li>
+</ul>
+<h3 id="memory-models">Memory models</h3>
+<p>There are two models which approach memory allocation in different ways. They are:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Contiguous</strong> memory management models</li>
+<li><strong>Non-contiguous</strong> memory management models</li>
+</ol>
+<p>The easiest way to understand this is through a graphical example:</p>
+<div class="figure">
+<img src="img/memoryModels.png" alt="Memory Models" />
+<p class="caption">Memory Models</p>
+</div>
 </body>
 </html>
