@@ -21,50 +21,57 @@
 <img src="img/memoryHierarchy.png" alt="Memory Hierarchy" />
 <p class="caption">Memory Hierarchy</p>
 </div>
-<pre><code>- **Registers** and **cache** - These are fast because they are located close to the CPU. There are sub-levels of cache memory called L1, L2, L3. These have slightly increasing speeds.
-- Main memory - This is basically **RAM**. Main memory isn&#39;t as fast because it takes a significant time for the CPU to access it. This time period is known as latency. 
-- **Disks** - Includes things like Hard Drives. Used for important information. Is much *cheaper* than other types.
-
-The operating system&#39;s job is to provide a memory abstraction. But how does it do this?</code></pre>
+<ul>
+<li><strong>Registers</strong> and <strong>cache</strong> - These are fast because they are located close to the CPU. There are sub-levels of cache memory called L1, L2, L3. These have slightly increasing speeds.</li>
+<li>Main memory - This is basically <strong>RAM</strong>. Main memory isn't as fast because it takes a significant time for the CPU to access it. This time period is known as latency.</li>
+<li><strong>Disks</strong> - Includes things like Hard Drives. Used for important information. Is much <em>cheaper</em> than other types.</li>
+</ul>
+<p>The operating system's job is to provide a memory abstraction. But how does it do this?</p>
 <h3 id="os-responsibilities">OS Responsibilities</h3>
-<pre><code>- The OS needs to **allocate** memory, and then keep track of whether or not the memory is being used. If it is not being used, it must **deallocate** this memory. 
-- It needs to *control access* when multiprogramming is applied. In other words it needs to prioritise certain tasks.
-- It needs to be able to transparently move data from memory to disk and vice versa.</code></pre>
+<ul>
+<li>The OS needs to <strong>allocate</strong> memory, and then keep track of whether or not the memory is being used. If it is not being used, it must <strong>deallocate</strong> this memory.</li>
+<li>It needs to <em>control access</em> when multiprogramming is applied. In other words it needs to prioritise certain tasks.</li>
+<li>It needs to be able to transparently move data from memory to disk and vice versa.</li>
+</ul>
 <h3 id="memory-models">Memory models</h3>
-<pre><code>There are two models which approach memory allocation in different ways. They are:
-
-1. **Contiguous** memory management models
-2. **Non-contiguous** memory management models
-
-The easiest way to understand this is through a graphical example:</code></pre>
+<p>There are two models which approach memory allocation in different ways. They are:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Contiguous</strong> memory management models</li>
+<li><strong>Non-contiguous</strong> memory management models</li>
+</ol>
+<p>The easiest way to understand this is through a graphical example:</p>
 <div class="figure">
 <img src="img/memoryModels.png" alt="Memory Models" />
 <p class="caption">Memory Models</p>
 </div>
-<pre><code>As you can see, the *contiguous* process is unchanged when stored in memory, whereas the *non-contiguous* memory is stored in segments (think linked-lists).</code></pre>
+<p>As you can see, the <em>contiguous</em> process is unchanged when stored in memory, whereas the <em>non-contiguous</em> memory is stored in segments (think linked-lists).</p>
 <h3 id="contiguous-approaches">Contiguous Approaches</h3>
 <h4 id="mono-programming">Mono-programming</h4>
-<pre><code>Mono-programming is when there is one single partition for all user processes.
-
-- For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one *user* process. This is how MS-DOS worked.
-- This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the process and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.
-- This one process is therefore allocated the entire memory space, and this process is always located in the same address space. This is why there is no *address translation*
-- The implementation is very simple, since the memory location is always known. No protection between different processes is required.
-- You can use **overlays** to enable the programmer to use more memory than available. Basically need to hack the program (probably don&#39;t need to know about this but just know it used to be OP).
-
-There are however, several disadvantages of this approach, some of which may be obvious.
-
-- As mentioned earlier, there is one block of memory, with some being given to the OS, and the rest being used for a user process. This sharing could cause problems. The user process could have direct access to the physical memory, and if something screws up it could end up having access to the OS memory. 
-- You can&#39;t multitask and so this approach is very outdated.
-- There is low utilisation of hardware resources such as CPU, I/O devices- this can make processes slow.
-
-Despite its limitations, the ease of memory access means that some modern appliances still use mono-programming. An example is a washing machine, where multiple processes aren&#39;t desirable (maybe not for Japanese machines). It is kind-of possible to simulate a multi-programming environment on a mono-programming machine. This can be achieved through **swapping**. This is the process of *swapping* a process out to the disk and loading a new one. These context switches, however, can be time consuming and so aren&#39;t really worth.</code></pre>
+<p>Mono-programming is when there is one single partition for all user processes.</p>
+<ul>
+<li>For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one <em>user</em> process. This is how MS-DOS worked.</li>
+<li>This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the process and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.</li>
+<li>This one process is therefore allocated the entire memory space, and this process is always located in the same address space. This is why there is no <em>address translation</em></li>
+<li>The implementation is very simple, since the memory location is always known. No protection between different processes is required.</li>
+<li>You can use <strong>overlays</strong> to enable the programmer to use more memory than available. Basically need to hack the program (probably don't need to know about this but just know it used to be OP).</li>
+</ul>
+<p>There are however, several disadvantages of this approach, some of which may be obvious.</p>
+<ul>
+<li>As mentioned earlier, there is one block of memory, with some being given to the OS, and the rest being used for a user process. This sharing could cause problems. The user process could have direct access to the physical memory, and if something screws up it could end up having access to the OS memory.</li>
+<li>You can't multitask and so this approach is very outdated.</li>
+<li>There is low utilisation of hardware resources such as CPU, I/O devices- this can make processes slow.</li>
+</ul>
+<p>Despite its limitations, the ease of memory access means that some modern appliances still use mono-programming. An example is a washing machine, where multiple processes aren't desirable (maybe not for Japanese machines). It is kind-of possible to simulate a multi-programming environment on a mono-programming machine. This can be achieved through <strong>swapping</strong>. This is the process of <em>swapping</em> a process out to the disk and loading a new one. These context switches, however, can be time consuming and so aren't really worth.</p>
 <h4 id="multi-programming">Multi-programming</h4>
-<pre><code>He does some maths to prove that CPU utilisation is higher on multi-programming machines, and that CPU utilisation increases as the number of processes increase. I doubt we&#39;ll get tested on this but check the lecture if you&#39;re interested.</code></pre>
+<p>He does some maths to prove that CPU utilisation is higher on multi-programming machines, and that CPU utilisation increases as the number of processes increase. I doubt we'll get tested on this but check the lecture if you're interested.</p>
 <h3 id="partitioning">Partitioning</h3>
 <p>I will now go over partitioning in the context of memory allocation for multi-programming systems.</p>
 <h4 id="fixed-partitions-of-equal-size">Fixed Partitions of Equal Size</h4>
-<p>This is when you split the main memory into <em>static, contiguous and equal sized partitions</em>(chunks). These have a fixed size and location. Any process can take any partition providing it is large enough. The actual memory allocation is simple since you don't need to worry about how much memory to give a process. The OS only has to keep track of which partitions are being used. Conceptually, this method is garbage for the following reasons: - You may have a small process which doesn't need much memory, using a large partition for a lot of memory. This means you could potentially waste a lot of memory. This is known as having <strong>Overlays</strong>. - If a process is too big for one of the partitions, you won't be able to run it. This is because the partitions are <em>static</em>, meaning they can't be dynamically adjusted.</p>
+<p>This is when you split the main memory into <em>static, contiguous and equal sized partitions</em>(chunks). These have a fixed size and location. Any process can take any partition providing it is large enough. The actual memory allocation is simple since you don't need to worry about how much memory to give a process. The OS only has to keep track of which partitions are being used. Conceptually, this method is garbage for the following reasons:</p>
+<ul>
+<li>You may have a small process which doesn't need much memory, using a large partition for a lot of memory. This means you could potentially waste a lot of memory. This is known as having <strong>Overlays</strong>.</li>
+<li>If a process is too big for one of the partitions, you won't be able to run it. This is because the partitions are <em>static</em>, meaning they can't be dynamically adjusted.</li>
+</ul>
 <h4 id="fixed-partitions-of-equal-size-1">Fixed Partitions of Equal Size</h4>
 <p>This is when you would partition the memory into non-equal sized partitions instead. For example instead of having 5 partitions with 5M each, you have 5 different partitions with 3M, 4M, 5M, 6M, 7M respectively. This reduces <em>internal fragmentation</em> since you are wasting less memory. Note that the partitions are still static and fixed size. This method also has its drawbacks:</p>
 <ul>

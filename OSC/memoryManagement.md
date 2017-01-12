@@ -12,54 +12,54 @@ The lecturer expresses often that he likes to think of a machine's memory as a l
 
 ![Memory Hierarchy](img/memoryHierarchy.png)
 
-    - **Registers** and **cache** - These are fast because they are located close to the CPU. There are sub-levels of cache memory called L1, L2, L3. These have slightly increasing speeds.
-    - Main memory - This is basically **RAM**. Main memory isn't as fast because it takes a significant time for the CPU to access it. This time period is known as latency. 
-    - **Disks** - Includes things like Hard Drives. Used for important information. Is much *cheaper* than other types.
+- **Registers** and **cache** - These are fast because they are located close to the CPU. There are sub-levels of cache memory called L1, L2, L3. These have slightly increasing speeds.
+- Main memory - This is basically **RAM**. Main memory isn't as fast because it takes a significant time for the CPU to access it. This time period is known as latency. 
+- **Disks** - Includes things like Hard Drives. Used for important information. Is much *cheaper* than other types.
 
-    The operating system's job is to provide a memory abstraction. But how does it do this?
+The operating system's job is to provide a memory abstraction. But how does it do this?
 
 ### OS Responsibilities
 
-    - The OS needs to **allocate** memory, and then keep track of whether or not the memory is being used. If it is not being used, it must **deallocate** this memory. 
-    - It needs to *control access* when multiprogramming is applied. In other words it needs to prioritise certain tasks.
-    - It needs to be able to transparently move data from memory to disk and vice versa.
+- The OS needs to **allocate** memory, and then keep track of whether or not the memory is being used. If it is not being used, it must **deallocate** this memory. 
+- It needs to *control access* when multiprogramming is applied. In other words it needs to prioritise certain tasks.
+- It needs to be able to transparently move data from memory to disk and vice versa.
 
 ### Memory models
 
-    There are two models which approach memory allocation in different ways. They are:
+There are two models which approach memory allocation in different ways. They are:
 
-    1. **Contiguous** memory management models
-    2. **Non-contiguous** memory management models
+1. **Contiguous** memory management models
+2. **Non-contiguous** memory management models
 
-    The easiest way to understand this is through a graphical example:
+The easiest way to understand this is through a graphical example:
 
 ![Memory Models](img/memoryModels.png)
 
-    As you can see, the *contiguous* process is unchanged when stored in memory, whereas the *non-contiguous* memory is stored in segments (think linked-lists).
+As you can see, the *contiguous* process is unchanged when stored in memory, whereas the *non-contiguous* memory is stored in segments (think linked-lists).
 
 ### Contiguous Approaches
 
 #### Mono-programming
 
-    Mono-programming is when there is one single partition for all user processes.
+Mono-programming is when there is one single partition for all user processes.
 
-    - For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one *user* process. This is how MS-DOS worked.
-    - This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the process and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.
-    - This one process is therefore allocated the entire memory space, and this process is always located in the same address space. This is why there is no *address translation*
-    - The implementation is very simple, since the memory location is always known. No protection between different processes is required.
-    - You can use **overlays** to enable the programmer to use more memory than available. Basically need to hack the program (probably don't need to know about this but just know it used to be OP).
+- For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one *user* process. This is how MS-DOS worked.
+- This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the process and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.
+- This one process is therefore allocated the entire memory space, and this process is always located in the same address space. This is why there is no *address translation*
+- The implementation is very simple, since the memory location is always known. No protection between different processes is required.
+- You can use **overlays** to enable the programmer to use more memory than available. Basically need to hack the program (probably don't need to know about this but just know it used to be OP).
 
-    There are however, several disadvantages of this approach, some of which may be obvious.
+There are however, several disadvantages of this approach, some of which may be obvious.
 
-    - As mentioned earlier, there is one block of memory, with some being given to the OS, and the rest being used for a user process. This sharing could cause problems. The user process could have direct access to the physical memory, and if something screws up it could end up having access to the OS memory. 
-    - You can't multitask and so this approach is very outdated.
-    - There is low utilisation of hardware resources such as CPU, I/O devices- this can make processes slow.
+- As mentioned earlier, there is one block of memory, with some being given to the OS, and the rest being used for a user process. This sharing could cause problems. The user process could have direct access to the physical memory, and if something screws up it could end up having access to the OS memory. 
+- You can't multitask and so this approach is very outdated.
+- There is low utilisation of hardware resources such as CPU, I/O devices- this can make processes slow.
 
-    Despite its limitations, the ease of memory access means that some modern appliances still use mono-programming. An example is a washing machine, where multiple processes aren't desirable (maybe not for Japanese machines). It is kind-of possible to simulate a multi-programming environment on a mono-programming machine. This can be achieved through **swapping**. This is the process of *swapping* a process out to the disk and loading a new one. These context switches, however, can be time consuming and so aren't really worth.
+Despite its limitations, the ease of memory access means that some modern appliances still use mono-programming. An example is a washing machine, where multiple processes aren't desirable (maybe not for Japanese machines). It is kind-of possible to simulate a multi-programming environment on a mono-programming machine. This can be achieved through **swapping**. This is the process of *swapping* a process out to the disk and loading a new one. These context switches, however, can be time consuming and so aren't really worth.
 
 #### Multi-programming
 
-    He does some maths to prove that CPU utilisation is higher on multi-programming machines, and that CPU utilisation increases as the number of processes increase. I doubt we'll get tested on this but check the lecture if you're interested.
+He does some maths to prove that CPU utilisation is higher on multi-programming machines, and that CPU utilisation increases as the number of processes increase. I doubt we'll get tested on this but check the lecture if you're interested.
 
 ### Partitioning
 
@@ -68,6 +68,7 @@ I will now go over partitioning in the context of memory allocation for multi-pr
 #### Fixed Partitions of Equal Size
 
 This is when you split the main memory into *static, contiguous and equal sized partitions*(chunks). These have a fixed size and location. Any process can take any partition providing it is large enough. The actual memory allocation is simple since you don't need to worry about how much memory to give a process. The OS only has to keep track of which partitions are being used. Conceptually, this method is garbage for the following reasons: 
+
 - You may have a small process which doesn't need much memory, using a large partition for a lot of memory. This means you could potentially waste a lot of memory. This is known as having **Overlays**.
 -  If a process is too big for one of the partitions, you won't be able to run it. This is because the partitions are *static*, meaning they can't be dynamically adjusted.
 
