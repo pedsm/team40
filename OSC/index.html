@@ -179,8 +179,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h4 id="dynamic-runtime-relocation">Dynamic Runtime Relocation</h4>
 <p>In order to achieve relocation at runtime, it relies on using two <em>registers</em>. These registers are special-purpose and so are only used for these tasks. They are:</p>
 <ol style="list-style-type: decimal">
-<li>The <strong>base register</strong> - Stores the <em>start address</em> of the partition. In other words, it uses the <em>offset</em> value mentioned previously. At <em>runtime</em>, a physical address is generated based on the value stored in the base register.</li>
-<li>The <strong>limit register</strong> - Stores the required size of the partition. At runtime, the resulting physical address is <em>compared</em> against the value in the limit register. This acts as a form of protection, as it ensures that the process is getting the correct amount of memory it needs and no less.</li>
+<li><p>The <strong>base register</strong> - Stores the <em>start address</em> of the partition. In other words, it uses the <em>offset</em> value mentioned previously. At <em>runtime</em>, a physical address is generated based on the value stored in the base register.</p></li>
+<li><p>The <strong>limit register</strong> - Stores the required size of the partition. At runtime, the resulting physical address is <em>compared</em> against the value in the limit register. This acts as a form of protection, as it ensures that the process is getting the correct amount of memory it needs and no less.</p></li>
 </ol>
 </body>
 </html>
