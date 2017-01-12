@@ -75,7 +75,7 @@ This is when you split the main memory into *static, contiguous and equal sized 
 - You may have a small process which doesn't need much memory, using a large partition for a lot of memory. This means you could potentially waste a lot of memory. This is known as having **Overlays**.
 -  If a process is too big for one of the partitions, you won't be able to run it. This is because the partitions are *static*, meaning they can't be dynamically adjusted.
 
-#### Fixed Partitions of Equal Size
+#### Fixed Partitions of Non-Equal Size
 
 This is when you would partition the memory into non-equal sized partitions instead. For example instead of having 5 partitions with 5M each, you have 5 different partitions with 3M, 4M, 5M, 6M, 7M respectively. This reduces *internal fragmentation* since you are wasting less memory. Note that the partitions are still static and fixed size. This method also has its drawbacks:
 
@@ -89,4 +89,43 @@ The following diagram describes two ways by which the OS can allocate processes 
 - Diagram (a) shows a method where there is one process queue per partition. This means that each partition has a queue of processes that require at least that amount of memory. In other words, it is first come first served for the processes (you can probably already detect problems with this). One example would be if there were an abundance of processes that required just one partition. This means that only one partition would be busy and so memory usage would be inefficient. 
 
 - Diagram (b) uses a single-queue. This means the computer takes each process as it comes and puts it into the smallest available partition. This partially solves the problem mentioned with for process queue (which is that you may be wasting several partitions). This method however, results in *increased internal fragrmentation*. This is because a 2M process may end up in a 6M partition if that is the smallest partition that is free.
+
+## Lecture 14 - Memory Management
+
+Topics covered in this lecture include:
+
+- Code **relocation** and **protection**
+- **Dynamic partitioning**
+- **Swapping**
+- **Managing free/occupied** memory
+
+### Code Relocation and Protection
+
+#### Introduction to logical addresses
+
+The lecture starts with a simple code example.
+
+```c
+#include <stdio.h>
+
+int iVar = 0;
+int main() {
+    int i = 0;
+    while(i < 10) {
+	iVar++;
+	sleep(2);
+	printf("Address: %xl Value: %d \n", &iVar, iVar);
+	i++;
+    }
+}
+```
+This code is simply printing the address and value of an incrementing variable. The lecturer asks if you run this program twice at the same time, whether or not the same address will be printed. The answer is yes, and it is here we are introduced to the concept of **logical addresses**. The **logical address** is basically the address given to the item at compile time, i.e. when the program is executed. This logical address may be different from the **physical address** which can be due to the operation of an *address translator* or *mapping function*. It is the OS's job to then translate this logical address into a physical address. This physical address that the OS assigns is likely to be different every time the program is run. So if the program were to be run at the same time, there would be no confusion or interference between variables. Remember that the *logical address* is assigned at compile time, so the variable in the code above will print the same address as long as it isn't recompiled. 
+
+####Relocation and protection principles
+
+- Remember how I said that the OS needs to translate the logical address into physical memory? This is known as **relocation**. The *relocation* must be solved by the OS in a way that allows for processes to be run at *changing memory locations*. 
+
+- **Protection** is what is enforced if you have two or more programs running at the same time. Linking it back to the code example, it ensures that the variables don't get stored in the same physical memory slots (its not just RNG).
+
+![Address Relocation](img/addressRelocation.png)
 

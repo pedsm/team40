@@ -6,6 +6,43 @@
   <meta name="generator" content="pandoc" />
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
 </head>
 <body>
 <h2 id="lecture-13-memory-management">Lecture 13: Memory Management</h2>
@@ -47,11 +84,14 @@
 <p>As you can see, the <em>contiguous</em> process is unchanged when stored in memory, whereas the <em>non-contiguous</em> memory is stored in segments (think linked-lists).</p>
 <h3 id="contiguous-approaches">Contiguous Approaches</h3>
 <h4 id="mono-programming">Mono-programming</h4>
-<p>Mono-programming is when there is one single partition for all user processes.</p>
+<p>Mono-programming is when there is one single partition for all user processes. For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one <em>user</em> process. This is how MS-DOS worked. Here is a graphical example for how the memory is split:</p>
+<div class="figure">
+<img src="img/monoModel.png" alt="Mono-programming memory split" />
+<p class="caption">Mono-programming memory split</p>
+</div>
 <ul>
-<li>For Mono-programming, a fixed region of memory is allocated to the OS/kernel, and the rest is reserved for a single user process. The OS can be thought of as another process, and so you can think of it as two processes. Just remember there is only one <em>user</em> process. This is how MS-DOS worked.</li>
-<li>This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the process and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.</li>
-<li>This one process is therefore allocated the entire memory space, and this process is always located in the same address space. This is why there is no <em>address translation</em></li>
+<li>This used contiguous memory allocation. Since there are no other processes, there is no use splitting up the memory and using a non-contiguous approach. Remember that only one process is being fulfilled at any time.</li>
+<li>This one process is therefore allocated across the entire memory space, and this process is always located in the same address space. This is why there is no <em>address translation</em></li>
 <li>The implementation is very simple, since the memory location is always known. No protection between different processes is required.</li>
 <li>You can use <strong>overlays</strong> to enable the programmer to use more memory than available. Basically need to hack the program (probably don't need to know about this but just know it used to be OP).</li>
 </ul>
@@ -72,10 +112,10 @@
 <li>You may have a small process which doesn't need much memory, using a large partition for a lot of memory. This means you could potentially waste a lot of memory. This is known as having <strong>Overlays</strong>.</li>
 <li>If a process is too big for one of the partitions, you won't be able to run it. This is because the partitions are <em>static</em>, meaning they can't be dynamically adjusted.</li>
 </ul>
-<h4 id="fixed-partitions-of-equal-size-1">Fixed Partitions of Equal Size</h4>
+<h4 id="fixed-partitions-of-non-equal-size">Fixed Partitions of Non-Equal Size</h4>
 <p>This is when you would partition the memory into non-equal sized partitions instead. For example instead of having 5 partitions with 5M each, you have 5 different partitions with 3M, 4M, 5M, 6M, 7M respectively. This reduces <em>internal fragmentation</em> since you are wasting less memory. Note that the partitions are still static and fixed size. This method also has its drawbacks:</p>
 <ul>
-<li>More work needs to be done for the allocation of processes to the partitions. Note that this is still a fixed size and static.</li>
+<li>More work needs to be done for the allocation of processes to the partitions.</li>
 <li>It assumes that a program knows how much memory it needs. You could have a program that uses dynamic memory allocation and so deciding which partition to put it inside would be a pain in the ass.</li>
 </ul>
 <p>The following diagram describes two ways by which the OS can allocate processes in such a partition.</p>
@@ -84,8 +124,41 @@
 <p class="caption">Non-Equal Partition Allocation</p>
 </div>
 <ul>
-<li><p>Diagram (a) shows a method where there is one process queue per partition. This means that each partition has a queue of processes that require that amount of memory. In other words, it is first come first served for the processes (you can probably already detect problems with this). One example would be if there were an abundance of processes that required just one partition. This means that only one partition would be busy and so memory usage would be inefficient.</p></li>
-<li><p>Diagram (b) uses a single-queue. This means the computer takes each process as it comes and puts it into the smallest available partition. This partially solves the problem mentioned with (a) which is that you may be wasting several partitions. This method however, results in <em>increased internal fragrmentation</em>. This is because a 2M process may end up in a 6M partition if that is the smallest partition that is free.</p></li>
+<li><p>Diagram (a) shows a method where there is one process queue per partition. This means that each partition has a queue of processes that require at least that amount of memory. In other words, it is first come first served for the processes (you can probably already detect problems with this). One example would be if there were an abundance of processes that required just one partition. This means that only one partition would be busy and so memory usage would be inefficient.</p></li>
+<li><p>Diagram (b) uses a single-queue. This means the computer takes each process as it comes and puts it into the smallest available partition. This partially solves the problem mentioned with for process queue (which is that you may be wasting several partitions). This method however, results in <em>increased internal fragrmentation</em>. This is because a 2M process may end up in a 6M partition if that is the smallest partition that is free.</p></li>
 </ul>
+<h2 id="lecture-14---memory-management">Lecture 14 - Memory Management</h2>
+<p>Topics covered in this lecture include:</p>
+<ul>
+<li>Code <strong>relocation</strong> and <strong>protection</strong></li>
+<li><strong>Dynamic partitioning</strong></li>
+<li><strong>Swapping</strong></li>
+<li><strong>Managing free/occupied</strong> memory</li>
+</ul>
+<h3 id="code-relocation-and-protection">Code Relocation and Protection</h3>
+<h4 id="introduction-to-logical-addresses">Introduction to logical addresses</h4>
+<p>The lecture starts with a simple code example.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
+
+<span class="dt">int</span> iVar = <span class="dv">0</span>;
+<span class="dt">int</span> main() {
+    <span class="dt">int</span> i = <span class="dv">0</span>;
+    <span class="kw">while</span>(i &lt; <span class="dv">10</span>) {
+    iVar++;
+    sleep(<span class="dv">2</span>);
+    printf(<span class="st">&quot;Address: %xl Value: %d </span><span class="ch">\n</span><span class="st">&quot;</span>, &amp;iVar, iVar);
+    i++;
+    }
+}</code></pre></div>
+<p>This code is simply printing the address and value of an incrementing variable. The lecturer asks if you run this program twice at the same time, whether or not the same address will be printed. The answer is yes, and it is here we are introduced to the concept of <strong>logical addresses</strong>. The <strong>logical address</strong> is basically the address given to the item at compile time, i.e. when the program is executed. This logical address may be different from the <strong>physical address</strong> which can be due to the operation of an <em>address translator</em> or <em>mapping function</em>. It is the OS's job to then translate this logical address into a physical address. This physical address that the OS assigns is likely to be different every time the program is run. So if the program were to be run at the same time, there would be no confusion or interference between variables. Remember that the <em>logical address</em> is assigned at compile time, so the variable in the code above will print the same address as long as it isn't recompiled.</p>
+<h4 id="relocation-and-protection-principles">Relocation and protection principles</h4>
+<ul>
+<li><p>Remember how I said that the OS needs to translate the logical address into physical memory? This is known as <strong>relocation</strong>. The <em>relocation</em> must be solved by the OS in a way that allows for processes to be run at <em>changing memory locations</em>.</p></li>
+<li><p><strong>Protection</strong> is what is enforced if you have two or more programs running at the same time. Linking it back to the code example, it ensures that the variables don't get stored in the same physical memory slots (its not just RNG).</p></li>
+</ul>
+<div class="figure">
+<img src="img/addressRelocation.png" alt="Address Relocation" />
+<p class="caption">Address Relocation</p>
+</div>
 </body>
 </html>
