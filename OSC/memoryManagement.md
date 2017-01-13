@@ -268,4 +268,52 @@ This part of the lectured marked the end of the study of *contiguous* allocation
 
 ### Paging
 
-Paging is based on the principles of *fixed partitioning* and *code re-location*. Code relocation is the process of translating from logical/virtual memory to physical memory. Paging works by splitting memory into smaller blocks. One or more blocks are allocated to a process. For example, a 11KB process could take up 3 blocks of 4 KB. Internal fragmentation (excess, wasted memory) is reduced since there can only be excess memory wasted for the last block. There is also no external fragmentation since blocks are stacked directly onto each other in main memory (one of the main reasons for using a non-contiguous approach).
+#### What is Paging?
+
+Paging is based on the principles of *fixed partitioning* and *code re-location*. Code relocation is the process of translating from logical/virtual memory to physical memory. Paging works by splitting memory into smaller blocks. One or more blocks are allocated to a process. For example, a 11KB process could take up 3 blocks of 4 KB. Internal fragmentation (excess, wasted memory) is reduced since there can only be excess memory wasted for the last block. There is also no external fragmentation since blocks are stacked directly onto each other in main memory (one of the main reasons for using a non-contiguous approach). Here is a graphical representation of paging:
+
+![Paging in main memory](img/paging1.png)
+
+Each grey block represents one page. The fact that the data is split isn't a huge problem, because it can be split logically like so:
+
+
+![Paging in main memory](img/paging2.png)
+
+As you can see, the process is already split up into different parts e.g. stack, heap, code. Therefore you with paging you can split up these processes further and it isn't that hard to follow. Note that you still need to allocate some extra memory for growth.
+
+So we can say that a **page** is simply a small block of *contiguous* memory in the *logical* address space. But when we're talking about this block in the context of *physical* memory, then we call it a **frame**. Pages and frames usually have the same size, which is usually a power of 2. Fun fact: sizes range between 512 bytes and 1Gb.
+
+#### Page Tables
+
+Now that the definitions are clear, I'll explain how the OS knows which page went where. This is essential for knowing the correct order of the process in main memory...obviously. You might have guessed that the best way to do this is with some sort of mapping, and you would be correct. First, the information about each logical page needs its own **base register** that specifies the start of the associated frame. This is similar to the base registers mentioned previously. Note that no *limit registers* are needed because each page is a fixed partition size. So we now know that each page has a *base register* which means that a process will have a *set* of base registers that needs to be stored and maintained. They are stored in what is called a **page table**. This is what it looks like:
+
+![Page Table](img/pageTable.png)
+
+The page table is basically a form of *mapping*. It basically keeps track of the index of the pages. In the lecture he describes the page table as a 'function that maps the page number of the logical address onto the frame number of the physical address'.
+
+frameNumber = f(pageNumber)
+
+#### Logical Addresses
+
+Every process has its own page table, which contains its own base registers. Each page has a *logical address* that helps with the address translation. This *logical address* contains two two things:
+
+1. The offset within the page. This is represented by the right most n bits. Remember that everything is a power of two. So if there are 12 bits for the offset, this means there are 2^12 bytes per page.
+
+2. The left most n bits represent the page number. It is represented like so.
+
+It is possible calculate the offset and page number from an address. Not sure if we learn how to do that or not...I hope not. Here is an image of all this shit in action yay!
+
+![Address Translation](img/addressTranslation.png)
+
+At the bottom is the logical address mentioned earlier. Note that since the offsets for both the page and frame are usually the same, the right most bits can be left the same. The page table contains the information for how the page number is translated to the frame number. 
+
+In summary, processes contain **bage tables** that contain **base registers** that contain **logical addresses** that contain information on what the page number is and its offset.
+
+1. Page number is extracted using logical address
+2. Frame number for that page number is retrieved in page table
+3. Offset is added to the start of the physical frame to allocate the correct amount of memory
+
+In terms of hardware implementation of address translation, the CPU's **Memory Management Unit** (MMU) intercepts logical addresses and uses a page table. It then stores the physical address on a **memory bus**.
+ 
+
+
