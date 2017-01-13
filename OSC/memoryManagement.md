@@ -173,11 +173,11 @@ Swapping holds some of the processes on the **drive** and **shuttles** (fancy wo
 
 NB: Swapping IS time consuming, but still saves time overall.
 
-#### External Fragmentation
+### External Fragmentation
 
 Whilst *swapping* and *dynamic partitioning* can remove the problem of *internal fragmentation*, swapping can cause a new problem called *External Fragmentation*. This when swapping a process out of memory will create "a hole". A new process may be either too large or too small for this gap that is left behind. If it is too small, memory is wasted in the form of an *unused block*. If a process is too large, the process may be unable to find a slot even if the total spare memory capacity is there. This leads to a decrease in efficiency. It IS possible to *compact* the memory to remove the holes and this is known as dynamic relocation. This is however, a very slow process and isn't worth a lot of the time.
 
-#### Allocation Structures
+### Allocation Structures
 
 Man! All of this memory management shit sounds really complicated! If only there was a data structure that would allow me to not only keep track of available memory, but also provide a way to quickly allocate processes to available memory slots! No Pedro, the answer does not lie in memory.js, but instead lies in *Linked Lists*. The following image shows what such a list would look like:
 
@@ -203,3 +203,69 @@ It is these disadvantages why bitmaps are much less common than linked lists in 
 
 In terms of advantages, the actual process of filling the hole is easier and faster with bitmaps because you just need to change the corresponding values from 0 to 1. Also I'm pretty sure bitmaps take up less space. The lecturer said that the advantages and disadvantages of linked lists/ bitmaps could come up in the test which is why I did some extra research on it. So make sure you understand the key differences.
 
+## Lecture 15 - Memory Management
+
+The goals for this lecture are:
+
+- **Dynamic partitioning management** with Linked lists
+- **Non-contiguous approaches**
+- **Paging**, page tables, address translation
+
+### Allocating Available Memory - Algorithms
+
+#### First Fit Algorithm
+
+1. Starts at the head of the linked list and iterates along it until a link is found that has sufficient free space for the process
+2. If the requested space is the same as the amount of free space in this partition, all the space is allocated
+3. Else, the free link is split into two- the first node is set to the size requested and marked "used" whilst the second is set to the remaining size and marked "free"
+
+#### Next Fit Algorithm
+
+1. Same as **first-fit** except stores where in the linked lists it stops, and then restarts the search from here after
+2. Gives an even chance to all memory to get allocated while first fit concentrates on the start of the list. Remember the linear array analogy, imagine repeatedly starting from the bottom to find free space.
+
+Simulations have shown that *next fit* actually gives a worse performance than *first fit*.
+
+#### Problems with First/Next Fit
+
+These methods are both very fast due to their YOLO nature, but this can also lead to some disadvantages. For example, first fit is only looking for the first available hole/gap. Once it finds it, it doesn't give two fucks whether or not there is a more suitable free partition later on. By then its already called "gg ez". This is problem because there could potentially be a free partition later on which fits the process exactly. In this scenario, the algorithm is unneccessarily breaking up a big hole, which brings more problems. Next fit doesn't improve much on this front; and so we have to look at other potential algorithms.
+
+#### Best Fit
+
+- The **best fit** algorithm will always search the entire linked list in order to find the smallest suitable hole for the memory request. As you can imagine, this is a lot slower than first/next fit. 
+- Best fit is the same as first/next fit in the respect that there is no guarantee that a partition with the exact right amount of memory will exist. It uses the same splitting method to solve this problem. However, since best fit finds the smallest hole to split, there could be a lot of very small holes generated. These are useless bits of memory that barely any processes will be able to use. 
+
+Note that it IS possible to merge free partitions that are next to each other and this is called **Coalescing** (more on that in a bit).
+
+#### Worst fit
+
+- Worst fit finds the largest available empty partition/hole and splits it. The idea being that there won't be any useless holes being left behind like there are with *best fit*. The holes will instead be large and probably more useful.
+- However in reality, this algorithm sucks ass too.
+
+He mentions in the lecture that a typical question in an exam would be to list the advantages and disadvantages of these methods. So make sure you understand them!
+
+#### Quick Fit
+
+- Maintains separate lists for commonly used sizes. For example could have lists for partitions of sizes 4k, 8k, 12k and so on.
+- This is a lot faster than *best fit* at finding a required sized partition.
+- Has same problem as *best fit* in that it can create tiny, useless partitions.
+- *Coalescing* (merging free spaces) is difficult due to the fact that it uses multiple lists. 
+
+### Managing Available Memory
+
+#### Coalescing
+
+Takes place when two *adjacent entries* in the linked list become free. When a block is freed, both neighbours are examined. Two or three entries are then combined into a larger block by adding up the sizes. The excess node(s) are deleted and the length/amount of memory for the node that was originally first is updated.
+
+#### Compacting
+
+As you can imagine, *coalescing* can only take you so far. If it gets to the point where lots of free blocks are being sandwiched by used blocks, and are distributed across memory, then we must use **compacting**. Obviously, this is a pretty time-consuming process - more so than coalescing. It is a three step process:
+1. Process is swapped out
+2. Free space is coalesced
+3. Process swapped back in at lowest available location
+
+This part of the lectured marked the end of the study of *contiguous* allocation schemes. Reminder that this is when processes are NOT split up to be stored in memory, but left as they are. The problems of such schemes are highlighted here. These include *internal fragmentation* from fixed-partitioning, as well as *external fragmentation* (wasted free holes) from dynamic partitioning.
+
+### Paging
+
+Paging is based on the principles of *fixed partitioning* and *code re-location*. Code relocation is the process of translating from logical/virtual memory to physical memory. Paging works by splitting memory into smaller blocks. One or more blocks are allocated to a process. For example, a 11KB process could take up 3 blocks of 4 KB. Internal fragmentation (excess, wasted memory) is reduced since there can only be excess memory wasted for the last block. There is also no external fragmentation since blocks are stacked directly onto each other in main memory (one of the main reasons for using a non-contiguous approach).
