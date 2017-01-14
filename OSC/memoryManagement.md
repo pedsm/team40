@@ -246,6 +246,7 @@ He mentions in the lecture that a typical question in an exam would be to list t
 
 #### Quick Fit
 
+
 - Maintains separate lists for commonly used sizes. For example could have lists for partitions of sizes 4k, 8k, 12k and so on.
 - This is a lot faster than *best fit* at finding a required sized partition.
 - Has same problem as *best fit* in that it can create tiny, useless partitions.
@@ -314,6 +315,16 @@ In summary, processes contain **bage tables** that contain **base registers** th
 3. Offset is added to the start of the physical frame to allocate the correct amount of memory
 
 In terms of hardware implementation of address translation, the CPU's **Memory Management Unit** (MMU) intercepts logical addresses and uses a page table. It then stores the physical address on a **memory bus**.
- 
+
+## Lecture 16 - Memory Management
+
+Turns out we do have to know how to calculate address translations.
+
+Topics covered in this lecture are:
+
+- Examples of Address Translation (math shit)
+- Principles behind **virtual memory**
+- Complex/ large page tables
+
 
 
