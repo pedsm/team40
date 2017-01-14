@@ -541,4 +541,103 @@ In addition to mutual exclusion, deadlocks must also be taken in consideration.
 As mentioned there are multiple approaches to achieve mutual exclusion and we are going to talk a bit more in detail about those.
 
 ### Software based
-Also known as Peterson's Solution this is known as software based as it has no
+Also known as Peterson's Solution this is known as software based as it doesn’t rely on any hardware.(this implementation is known to work well on old hardware, not so much on newer machines.)
+
+This solution requires two flags(variables).
+
+ - turn: indicates the next process to be ran.
+ - boolean flag[2]: indicates that a process is ready to enter its critical section
+
+ This algorithm works by running thread 1 and then waiting until thread 2 runs and vice versa, this allows to both run once and let the other run. This is a simple approach but it is not the most efficient.
+
+> Things to consider this only work for two threads(i and j)(the reason that flag is a array of size 2) this will
+
+Example code for process I(for process J swap i for j and vice versa)
+```c
+do
+{
+	flag[i] = true; // i wants to enter critical section
+	turn = j; // allow j to access first
+	while (flag[j] && turn == j);
+	// whilst j wants to access critical section
+	// and its j’s turn, apply busy waiting
+
+	// CRITICAL SECTION
+
+	flag[i] = false;
+	// remainder section
+} while (...);
+```
+
+> Always allow the other process to go first unless you need to run.
+
+This removes any kind of OS based resources and implements the whole multi threading through software(this has drwabacks mentioned before)
+
+#### Requirements
+This solution will meet all the conditions it will be fair, always allow the next process to run when not in critical section(busy waiting\footnote{it waits until the next process finish running} happens).
+
+This also satisfy progress as both processes alternate and both will always end up running.
+
+#### Drawbacks
+This implementation requires busy waiting, this means that one process has to wait for the other one to finish before it runs again, this means that if the thread that is in its critical section is interrupted the other process will waste CPU time by being stuck in an infinite loop this of course will stop with an interrupt eventually but it still wastes CPU work time.
+
+### Hardware implementation
+The hardware implementation works in a completely different way as instead of preventing threads from doing what they need to do it will actually prevent the OS from starting the other thread by blocking interrupt. This technique is called Disable interrupts.
+
+This works fine in single CPU machines but it is a lot less efficient on modern CPUs as it removes OS based optimizations.
+
+#### How to do it
+The way this happens as it simulates multiple instructions as a single hardware instruction, although it is not. To achieve this you must implement methods such as:
+
+ - test_and_set();
+ - swap_and_compare();
+
+##### test_and_set()
+This must be done in an atomic unit as it won't be overwritten.
+
+```c
+// Test and set method
+boolean test_and_set(boolean \* lock) {
+	boolean rv = \*lock;
+	\*lock = true;
+	return rv;
+}
+// Example of using test and set method
+do {
+	// WHILE the lock is in use, apply busy waiting
+	while (test_and_set(&lock));
+	// Lock was false, now true
+	// CRITICAL SECTION
+	...
+	lock = false;
+	...
+	// remainder section
+} while (...)
+```
+
+##### compare_and_swap()
+Both implementations will result on busy waiting but this might not be a problem if the critical sections are fairly small.
+
+```c
+// Compare and swap method
+int compare_and_swap(int \*lock, int expected, int new_value) {
+	int temp = \*lock;
+	if(\*lock == expected)
+	\*lock = new_value;
+	return temp;
+}
+// Example using compare and swap method
+do {
+	// While the lock is in use (i.e. == 1), apply busy waiting
+	while (compare_and_swap(&lock, 0, 1) != 0);
+	// Lock was false, now true
+	// CRITICAL SECTION
+	...
+	lock = 0;
+	...
+	// remainder section
+} while (...);
+```
+Both of these implementations, hardware and software use busy waiting(not optimal but useful), Starvation is possible and deadlocks are possible what makes these implementations outdated and not optimal.
+
+## [Concurrency 3](http://moodle.nottingham.ac.uk/pluginfile.php/2862038/mod_resource/content/3/concurrency3.pdf)
