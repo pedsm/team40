@@ -305,6 +305,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ol>
 <p>In terms of hardware implementation of address translation, the CPU's <strong>Memory Management Unit</strong> (MMU) intercepts logical addresses and uses a page table. It then stores the physical address on a <strong>memory bus</strong>.</p>
 <h2 id="lecture-16---memory-management">Lecture 16 - Memory Management</h2>
+<h3 id="math-bs">Math Bs</h3>
 <p>Turns out we do have to know how to calculate address translations.</p>
 <p>Topics covered in this lecture are:</p>
 <ul>
@@ -312,5 +313,88 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Principles behind <strong>virtual memory</strong></li>
 <li>Complex/ large page tables</li>
 </ul>
+<p>There are various calculations that are possible for address translation. We are expected to know how to do these. I will go over the examples he gives in the lecture because that is really all we have to work with. Here is a printscreen of the question he set at the beginning of the lecture.</p>
+<div class="figure">
+<img src="img/addressCalculation.png" alt="Address calculation" />
+<p class="caption">Address calculation</p>
+</div>
+<p>Lets solve this procedurally. I'm sorry about the shitty notation but pedro's making me use some shitty markdown language and if I want to put it in tex then I have to compile into tex and then use pdflatex to get it as a pdf. Ain't nobody got time fo dat.</p>
+<ul>
+<li>In the context of memory systems, one KB is 1024 bytes. This is the same as 2^10.</li>
+<li>The offset is basically the size of the page/frame.</li>
+<li>Therefore the offset (M) is 1024 x 4 = 4096.</li>
+<li>Remember that bits are doing in powers of 2.</li>
+<li>2^x = 4096 we can use logs e.g Log2(4096) = 12 therefore 12 bits.</li>
+<li>Look at the logical address array again, there are 16 bits and we've used 12 for the offset.</li>
+<li>Therefore we know there are 4 left for the page number.</li>
+<li>4 bits in pages is 2^4 therefore N = 16.</li>
+</ul>
+<p>The next part of the question is more straight-forward. They ask us to give the physical addresses e.g, WHICH page/frame it is from 0-16. Once again lets take it one step at a time.</p>
+<ul>
+<li>We know that each page/frame has an offset of 4096 bytes, this information is given to us.</li>
+<li>For 0 KB, it is obvious that this will represent page 0 which is frame 2 on the table.</li>
+<li>For 8192 KB, we simply do 8192 / 4096 = 2 and learn that this must therefore be page 2 which is frame 6.</li>
+<li>We use the same method for 20500 e.g. 20500 / 4096 = 5.0048... so it must be page 5 which is frame 3.</li>
+</ul>
+<p>You might have recognised that the last calculation isn't exactly 5. The virtual address given for this calculation is 20500. Since it doesn't equate to 5 we know that this address isn't the start of the page. If you want to calculate <em>exactly</em> where in the page this address is, you can do another calculation like so:</p>
+<ul>
+<li>First we find where the actual beginning of page 5 is</li>
+<li>We do this with 5 x 4096 = 20480</li>
+<li>Then we calculate the offset between here and 20500</li>
+<li>20500 - 20480 = 20</li>
+</ul>
+<p>We can therefore say that the offset is 20. It will be the same for the frame. The best way to think of it is that this particular address is 20 bytes after the beginning of the frame/ page 5. Shoutout to psykoSio.</p>
+<h3 id="benefits-of-paging">Benefits of Paging</h3>
+<p>There are some conceptual benefits of paging. We know that pages split up code into <strong>small subsets</strong>. But why can we get away with this and why is this not shit?</p>
+<ul>
+<li>Most <em>code</em> and <em>data references</em> within a process are usually <em>clustered</em> anyway. This relates to the <strong>principle of locality</strong>.</li>
+<li>Note that reality is different to the examples we've seen, not all pages are actually loaded in at the same time. This is simply because we don't need them to be.</li>
+<li>Basically, since in CS important/related shit gets grouped up ANYWAY, there really isn't much point in loading an entire set of pages for an entire program into memory. This is wasteful, since you don't need a lot of it at any given time.</li>
+<li>Instead we load desired blocked <em>on demand</em> to get what we need and skip the BS.</li>
+</ul>
+<p>Think about it in the context of a program. If your program is in a for loop, it is only using the variables and data that are required for the loop, it doesn't need anything else. It isn't efficient to store things in memory that aren't being used and a good OS will filter it out. When paging occurs, the program is already split up into blocks, and so not much work has to be done after this to decide which pages to use and when. The pages that are actually loaded into main memory are known as the <strong>resident set</strong>. Here is what a resident set looks like:</p>
+<div class="figure">
+<img src="img/residentSet.png" alt="Resident Set" />
+<p class="caption">Resident Set</p>
+</div>
+<p>The white pages in this image make up the <em>resident set</em>. Talk about this for ez marks.</p>
+<h3 id="page-faults">Page Faults</h3>
+<p>A <strong>page fault</strong> is when the processor accesses a page that is not in memory. It might exist in logical memory but if the mapping doesn't exist to physical memory, it is no use. So this can happen if the OS tries too hard to be efficient with its page swapping (think windows). I made that up but its probably true.</p>
+<ul>
+<li>This first results in an <strong>interrupt</strong>, which is when a process enters a <em>blocked state</em></li>
+<li>If its too shit (windows) it will just terminate the process completely (Microsoft word)</li>
+<li>Otherwise the OS will then try to get the page into physical memory</li>
+<li>It does this by executing an <strong>I/O operation</strong></li>
+<li>A <strong>contex switch</strong> will take place</li>
+<li>An <strong>interrupt</strong> then signals that the I/O operation is complete and so the process will re-enter the ready state.</li>
+</ul>
+<h2 id="benefits-of-virtual-memory">Benefits of Virtual Memory</h2>
+<p>All of which has been discussed in this lecture can be spoken about in the context of <strong>virtual memory</strong>. This is basically the same as logical memory but is a bit more related to what the program is using and what is required. It is <em>virtual</em> because it doesn't exist in physical form like the main memory does. The benefits have basically already been discussed but they dedicated a slide to it so I'll state them again.</p>
+<ul>
+<li>Allows you to maintain more processes in main memory and therefore improves CPU utilisation. Again, its the idea of only using what you need, and saving memory space in the process.</li>
+<li>As a result, virtual memory allows the logical address space (i.e. processes) to be larger than the physical address space.</li>
+<li>A 64 bit machine theoretically can hold 2^64 logical addresses.</li>
+</ul>
+<h3 id="page-entry">Page Entry</h3>
+<p>For every page, there is a <strong>Page Entry</strong> which contains necessary information such as whether or not the page/frame is in use etc. These entries differ from OS to OS but a general structure can be seen here:</p>
+<div class="figure">
+<img src="img/pageEntry.png" alt="Page Entry" />
+<p class="caption">Page Entry</p>
+</div>
+<ul>
+<li><strong>Present/absent bit</strong> - says if the page/frame exists in memory</li>
+<li><strong>Modified bit</strong> - sets if the page or frame has been modified. This is important because these pages have to then be written back to the disk when they are evicted (finished). Therefore swapping becomes a lot easier.</li>
+<li><strong>Referenced bit</strong> - says if page is in use</li>
+<li><strong>Protection and sharing bits</strong> - Used for reading, writing and execute commands</li>
+</ul>
+<h3 id="dealing-with-large-page-tables">Dealing with Large Page Tables</h3>
+<p>Page tables can get pretty large and require a place to be stored. They're too big to be stored in registers. They therefore have to be stored in <em>main memory</em>.</p>
+<h4 id="multi-level-page-tables">Multi-Level Page Tables</h4>
+<p>You can have <strong>multi-level</strong> page tables, which <em>save memory</em>. You can think of this as <em>paging the page table</em>. They look like so:</p>
+<div class="figure">
+<img src="img/multiTable.png" alt="Multi-Level Page Table" />
+<p class="caption">Multi-Level Page Table</p>
+</div>
+<p>Next lecture we will look at <strong>inverted page tables</strong> for large virtual address spaces. Note that since address translation takes time, it needs to be very fast.</p>
 </body>
 </html>
