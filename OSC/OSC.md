@@ -853,3 +853,70 @@ void put_forks(int i)
 ```
 
 This allows maximum parallelism as it only blocks philosophers that are not able to sleep and it also avoids busy waiting.
+
+## [Deadlocks](http://moodle.nottingham.ac.uk/pluginfile.php/2862040/mod_resource/content/4/deadlocks1.pdf)
+A deadlock occurs when two processes require each other to run, and because of that they get stuck on an infinite waiting list. The most common occurrence of deadlocks is when two processes require the same resource and both each get one. This means that none are going to run and they won't ever release their resources.
+
+Deadlocks can occur both locally or over a network, assuming resources are being shared through a network(Databases, network printers, etc.). This should explain how to detect, prevent and avoid them.
+
+Conditions for a deadlock(all must be met)
+
+- Mutual exclusion(A resource can be assigned to at most one process at a time).
+- Hold and wait condition(A resource can be held while requesting more resources).
+- No preemption: Resources cannot be taken from other process
+- Circular wait: there is a circular chain of two or more processes waiting for each other.
+
+No deadlocks will occur if one of these is not satisfied.
+
+### Graphs
+Deadlocks can be represented with graphs.
+
+- A square represented resources
+- A circle represents processes
+- An arrow represents a request or a release
+
+If a process has an arrow which can come back to itself(a circle) than a deadlock can occur(Figure 10).
+
+![Modelling for deadlocks](https://i.gyazo.com/bd0292b56af00ff874ffb09b379fb677.png)
+
+A table can also be used to represent order of request and releases, this allows for easier visualization of resources and therefore deadlocks.
+
+| Process A | Process B     | Process C |
+| :------------- | :------------- |:---------- |
+| Request R       |  Request S       | Request T |
+| Request S       |  Request T       | Request R |
+| Release R       |  Release S       | Release T |
+| Release S       |  Release T       | Release R |
+
+To better visualize this we can use this information to model a graph and then look for circular patterns.
+
+![Graphical visualization of the table](https://i.gyazo.com/5150343a86765eb90e954e800f998f61.png)
+
+One the last figure we can see a circular pattern what means that this system can deadlock.
+
+> Algorithm, to quickly identify this just run a depth first search if you ever return a previously visited node then the algorithm can deadlock.
+
+#### Matrix approach to deadlocks
+Ok boyz this is easier than it seems so chill. Basically if you have multiple resources like multiple printers you can easily represent this in an matrix to detect deadlocks based on a current state and the resources being requested.
+
+To start with we define matrixes like this:
+
+![Matrix template](https://i.gyazo.com/20cb1873f7eb96ea2f91d9f1680861c8.png)
+
+The list of E1,E2... define your resources while A1,A2... define the current available resources. The C matrix define the resources used by processes(by row) and the R matrix defines the resources being requested.
+
+![Matrix example](https://i.gyazo.com/cf2b3721de3a7bae8940f39ca6a5b084.png)
+
+Lets consider figure 13 to do an example. We can see the resources being used by each process on C, and the resources to be requested on R. First we need to define what process is going to be ran, if we see the Available resources 'A' neither process 1 or 2 can run as they require one scanner and one CD rom both not available. However process 3 can, if no process can be run at a given point then we have a deadlock.
+
+As process 3 can be ran then we assume that is done and we add the current allocated resources [0,1,2,0] back to available and run through all processes again. We repeat this until we finish all processes in the matrix. If we can finish all process that means we didn't hit a deadlock.
+
+### Deadlock recovery
+This can be applied using the previously mentioned methods. However they are reactive, this means they won't prevent deadlock but they will try to recover from it doing things such as deallocating resources from one thread to allow another one to run.
+
+### Deadlock avoidance
+If we understand the behaviour of processes we can avoid deadlocks by making processes run at different times. The following graph allows you to see this in action.
+
+![Resource trajectories](https://i.gyazo.com/d733d4c0d0dc735b76d4a0e4bf71aea7.png)
+
+In figure 14 we have an example the represents the progress of two processes A and B represented on the X and Y axis respectively. As our end result we want to reach u(where both processes finish), we can also see that for certain parts of the process they will need the printer and plotter for a certain amount of time. The areas shaded is where both processes need the same resource. Knowing this information we can force processes to run to avoid the shaded areas. A safe state is any point where you can avoid a deadlock. That means that the points between l1 and l2 with l5 and l6 although the program is not deadlocked, it actually will run into a deadlock, this is called an unsafe space.
