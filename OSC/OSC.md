@@ -442,3 +442,100 @@ Threads also have different types related to how they run in relation to each ot
 - Unrelated threads do completely different tasks and don't need to run at the same time, for example an auto save function which can run whenever the CPU has time to do it and not necessarily while the user is writing because it doesn't require a change to try to save it will always try to save.
 
 ![Example of parallel threads](img/pic8.png)
+
+## [Concurrency 1]( http://moodle.nottingham.ac.uk/pluginfile.php/2862036/mod_resource/content/7/concurrency1.pdf)
+
+### What is concurrency?
+Concurrency is when a computer simulates or actually run(only on multi-core CPUs) one or more processes in parallel. This actually means that we have multiple threads running at the same time.
+
+### Pthreads (POSIX API)
+Pthreads or POSIX api is the linux api for creating multi threaded applications. Of course this is not the only one but this is one of the easier most straight forward implementation
+
+#### Code example
+
+```C
+// include stdio.h, stdlib.h, and pthread.h here
+int counter = 0;
+void * calc(void * number_of_increments)
+{
+	int i;
+	for(i = 0; i < *((int*) number_of_increments);i++)
+	{
+		counter++;
+	}
+}
+int main()
+{
+	int iterations = 50000000;
+	pthread_t tid1,tid2;
+	if(pthread_create(&tid1, NULL, calc, (void \*) &iterations) == -1)
+	{
+		printf("unable to create thread");
+		exit(0);
+	}
+	if(pthread_create(&tid2, NULL, calc, (void \*) &iterations) == -1)
+	{
+		printf("unable to create thread");
+		exit(0);
+	}
+	pthread_join(tid1,NULL);
+	pthread_join(tid2,NULL);
+	printf("The value of counter is: %d\n", counter);
+}
+```
+
+This code is a simple example, it creates two threads with the calc() function running. The main thread will then wait until all the child processes are done before finishing and printing out the final value.
+
+However there is a major problem with this code as it won't return the expected result due to critical sections.
+
+### Critical Sections
+As mentioned before CPUs work on what is called a loop, it will fetch information decode that information and then run it. Logically those instructions will take some time. What happens when the code example is ran is that two threads will run at the same time and both will overwrite each other values causing some additions to be lost.
+
+Lets call the child processes thread 1 and thread 2. Both of them do the simple operation of adding one to the counter. The behaviour I am about to describe is random and won't happen always.
+
+Thread 1 will read the value of counter and only after that it can add one to it, after that is done the new value of counter will be saved. However lets say both threads read the value of counter on a 1ms interval. Thread one will read the value of 50 on the counter, and thread 2 will do the same. Because thread 1 started first it will save the value 51 in the counter and 1ms after thread 2 will do the same saving the value 51 again. This means one iteration has passed for both of these threads but we only added one to the value of counter instead of 2.
+
+A critical section is any area where data is being read and modified by more than one process, this section of instructions must have a controlled access to prevent this exact behaviour to repeat.
+
+#### Race conditions
+A race condition is the name given when multiple threads access shared date and the result actually changes depending on the order they access they data.
+
+This can and have to be removed using synchronisation, by using different mechanisms. Those mechanisms are called multiple exclusion.
+
+#### Mutual exclusion
+
+The following is as simple example of mutual exclusion(not implemented)
+```C
+do
+{
+	...
+	// ENTRY to critical section
+	critical section, e.g.counter++;
+	// EXIT critical section
+	remaining code
+	...
+} while (...);
+```
+
+To solve race conditions you must satisfy the following requirements:
+
+ - Mutual exclusion: only one process can be in a critical section at a time(for some specific data)
+ - Progress: all processes must be able to enter its critical section at some point in time.
+ - Fairness: process cannot wait indefinitely.
+ - The process which set or check for a critical section must be atomic(needs to be done in one CPU cycle)
+
+##### Approaches
+There are different approaches to make mutual exclusion.
+
+- Software based
+- Hardware based
+- Based on:
+ 	- Mutexes
+	- Semaphores
+	- Monitors(Software inside a programming language)
+
+In addition to mutual exclusion, deadlocks must also be taken in consideration.
+
+## [Concurrency 2 - Approaches](http://moodle.nottingham.ac.uk/pluginfile.php/2862037/mod_resource/content/3/concurrency2.pdf)
+
+As mentioned there are multiple approaches to achieve mutual exclusion and we are going to talk a bit more in detail about those
