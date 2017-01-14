@@ -318,6 +318,8 @@ In terms of hardware implementation of address translation, the CPU's **Memory M
 
 ## Lecture 16 - Memory Management
 
+### Math Bs
+
 Turns out we do have to know how to calculate address translations.
 
 Topics covered in this lecture are:
@@ -326,5 +328,78 @@ Topics covered in this lecture are:
 - Principles behind **virtual memory**
 - Complex/ large page tables
 
+There are various calculations that are possible for address translation. We are expected to know how to do these. I will go over the examples he gives in the lecture because that is really all we have to work with. Here is a printscreen of the question he set at the beginning of the lecture.
 
+![Address calculation](img/addressCalculation.png)
 
+Lets solve this procedurally. I'm sorry about the shitty notation but pedro's making me use some shitty markdown language and if I want to put it in tex then I have to compile into tex and then use pdflatex to get it as a pdf. Ain't nobody got time fo dat.
+
+- In the context of memory systems, one KB is 1024 bytes. This is the same as 2^10.
+- The offset is basically the size of the page/frame.
+- Therefore the offset (M) is 1024 x 4 = 4096.
+- Remember that bits are doing in powers of 2.
+- 2^x = 4096 we can use logs e.g Log2(4096) = 12 therefore 12 bits.
+- Look at the logical address array again, there are 16 bits and we've used 12 for the offset.
+- Therefore we know there are 4 left for the page number.
+- 4 bits in pages is 2^4 therefore N = 16.
+
+The next part of the question is more straight-forward. They ask us to give the physical addresses e.g, WHICH page/frame it is from 0-16. Once again lets take it one step at a time.
+
+- We know that each page/frame has an offset of 4096 bytes, this information is given to us.
+- For 0 KB, it is obvious that this will represent page 0 which is frame 2 on the table.
+- For 8192 KB, we simply do 8192 / 4096 = 2 and learn that this must therefore be page 2 which is frame 6.
+- We use the same method for 20500 e.g. 20500 / 4096 = 5.0048... so it must be page 5 which is frame 3.
+
+You might have recognised that the last calculation isn't exactly 5. The virtual address given for this calculation is 20500. Since it doesn't equate to 5 we know that this address isn't the start of the page. If you want to calculate *exactly* where in the page this address is, you can do another calculation like so:
+
+- First we find where the actual beginning of page 5 is
+- We do this with 5 x 4096 = 20480
+- Then we calculate the offset between here and 20500
+- 20500 - 20480 = 20
+
+We can therefore say that the offset is 20. It will be the same for the frame. The best way to think of it is that this particular address is 20 bytes after the beginning of the frame/ page 5. Shoutout to psykoSio.
+
+### Benefits of Paging
+
+There are some conceptual benefits of paging. We know that pages split up code into **small subsets**. But why can we get away with this and why is this not shit?
+
+- Most *code* and *data references* within a process are usually *clustered* anyway. This relates to the **principle of locality**. 
+- Note that reality is different to the examples we've seen, not all pages are actually loaded in at the same time. This is simply because we don't need them to be.
+- Basically, since in CS important/related shit gets grouped up ANYWAY, there really isn't much point in loading an entire set of pages for an entire program into memory. This is wasteful, since you don't need a lot of it at any given time.
+- Instead we load desired blocked *on demand* to get what we need and skip the BS.
+
+Think about it in the context of a program. If your program is in a for loop, it is only using the variables and data that are required for the loop, it doesn't need anything else. It isn't efficient to store things in memory that aren't being used and a good OS will filter it out. When paging occurs, the program is already split up into blocks, and so not much work has to be done after this to decide which pages to use and when. The pages that are actually loaded into main memory are known as the **resident set**. Here is what a resident set looks like:
+
+![Resident Set](img/residentSet.png)
+
+The white pages in this image make up the *resident set*. Talk about this for ez marks.
+
+### Page Faults
+
+A **page fault** is when the processor accesses a page that is not in memory. It might exist in logical memory but if the mapping doesn't exist to physical memory, it is no use. So this can happen if the OS tries too hard to be efficient with its page swapping (think windows). I made that up but its probably true.
+
+- This first results in an **interrupt**, which is when a process enters a *blocked state*
+- If its too shit (windows) it will just terminate the process completely (Microsoft word)
+- Otherwise the OS will then try to get the page into physical memory
+- It does this by executing an **I/O operation**
+- A **contex switch** will take place
+- An **interrupt** then signals that the I/O operation is complete and so the process will re-enter the ready state.
+
+## Benefits of Virtual Memory
+
+All of which has been discussed in this lecture can be spoken about in the context of **virtual memory**. This is basically the same as logical memory but is a bit more related to what the program is using and what is required. It is *virtual* because it doesn't exist in physical form like the main memory does. The benefits have basically already been discussed but they dedicated a slide to it so I'll state them again.
+
+- Allows you to maintain more processes in main memory and therefore improves CPU utilisation. Again, its the idea of only using what you need, and saving memory space in the process.
+- As a result, virtual memory allows the logical address space (i.e. processes) to be larger than the physical address space. 
+- A 64 bit machine theoretically can hold 2^64 logical addresses.
+
+### Page Entry
+
+For every page, there is a **Page Entry** which contains necessary information such as whether or not the page/frame is in use etc. These entries differ from OS to OS but a general structure can be seen here:
+
+![Page Entry](img/pageEntry.png)
+
+- **Present/absent bit** - says if the page/frame exists in memory
+- **Modified bit** - sets if the page or frame has been modified. This is important because these pages have to then be written back to the disk when they are evicted (finished).
+- **Referenced bit** - says if page is in use
+- **Protection and sharing bits** - Used for reading, writing and execute commands.
