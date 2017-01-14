@@ -383,9 +383,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <ul>
 <li><strong>Present/absent bit</strong> - says if the page/frame exists in memory</li>
-<li><strong>Modified bit</strong> - sets if the page or frame has been modified. This is important because these pages have to then be written back to the disk when they are evicted (finished).</li>
+<li><strong>Modified bit</strong> - sets if the page or frame has been modified. This is important because these pages have to then be written back to the disk when they are evicted (finished). Therefore swapping becomes a lot easier.</li>
 <li><strong>Referenced bit</strong> - says if page is in use</li>
-<li><strong>Protection and sharing bits</strong> - Used for reading, writing and execute commands.</li>
+<li><strong>Protection and sharing bits</strong> - Used for reading, writing and execute commands</li>
 </ul>
+<h3 id="dealing-with-large-page-tables">Dealing with Large Page Tables</h3>
+<p>Page tables can get pretty large and require a place to be stored. They're too big to be stored in registers. They therefore have to be stored in <em>main memory</em>.</p>
+<h4 id="multi-level-page-tables">Multi-Level Page Tables</h4>
+<p>You can have <strong>multi-level</strong> page tables, which <em>save memory</em>. You can think of this as <em>paging the page table</em>. They look like so:</p>
+<div class="figure">
+<img src="img/multiTable.png" alt="Multi-Level Page Table" />
+<p class="caption">Multi-Level Page Table</p>
+</div>
+<p>Next lecture we will look at <strong>inverted page tables</strong> for large virtual address spaces. Note that since address translation takes time, it needs to be very fast.</p>
 </body>
 </html>

@@ -400,6 +400,25 @@ For every page, there is a **Page Entry** which contains necessary information s
 ![Page Entry](img/pageEntry.png)
 
 - **Present/absent bit** - says if the page/frame exists in memory
-- **Modified bit** - sets if the page or frame has been modified. This is important because these pages have to then be written back to the disk when they are evicted (finished).
+- **Modified bit** - sets if the page or frame has been modified. This is important because these pages have to then be written back to the disk when they are evicted (finished). Therefore swapping becomes a lot easier.
 - **Referenced bit** - says if page is in use
-- **Protection and sharing bits** - Used for reading, writing and execute commands.
+- **Protection and sharing bits** - Used for reading, writing and execute commands
+
+### Dealing with Large Page Tables
+
+Page tables can get pretty large and require a place to be stored. They're too big to be stored in registers. They therefore have to be stored in *main memory*. 
+
+#### Multi-Level Page Tables
+
+You can have **multi-level** page tables, which *save memory*. You can think of this as *paging the page table*. They look like so:
+
+![Multi-Level Page Table](img/multiTable.png)
+
+Remember that we do not need all of the pages in memory. This means that we can split the page table. If you only want specific sections of pages, you can have multiple levels of page tables. The result is a tree-like structure. The image above shows that there is a *top-level page table* which is similar to a key. Instead of having a page number, it has:
+
+1. An index to a page table of a second level (can be multiple)
+2. A page within the second level page table 
+
+This means you can have a page table of only pages that you need and this saves memory.
+
+Next lecture we will look at **inverted page tables** for large virtual address spaces. Note that since address translation takes time, it needs to be very fast.
