@@ -538,4 +538,7 @@ In addition to mutual exclusion, deadlocks must also be taken in consideration.
 
 ## [Concurrency 2 - Approaches](http://moodle.nottingham.ac.uk/pluginfile.php/2862037/mod_resource/content/3/concurrency2.pdf)
 
-As mentioned there are multiple approaches to achieve mutual exclusion and we are going to talk a bit more in detail about those
+As mentioned there are multiple approaches to achieve mutual exclusion and we are going to talk a bit more in detail about those.
+
+### Software based
+Also known as Peterson's Solution this is known as software based as it has no
