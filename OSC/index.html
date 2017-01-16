@@ -395,6 +395,47 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <img src="img/multiTable.png" alt="Multi-Level Page Table" />
 <p class="caption">Multi-Level Page Table</p>
 </div>
+<p>Remember that we do not need all of the pages in memory. This means that we can split the page table. If you only want specific sections of pages, you can have multiple levels of page tables. The result is a tree-like structure. The image above shows that there is a <em>top-level page table</em> which is similar to a key. Instead of having a page number, it has:</p>
+<ol style="list-style-type: decimal">
+<li>An index to a page table of a second level (can be multiple)</li>
+<li>A page within the second level page table</li>
+</ol>
+<p>This means you can have a page table of only pages that you need and this saves memory.</p>
 <p>Next lecture we will look at <strong>inverted page tables</strong> for large virtual address spaces. Note that since address translation takes time, it needs to be very fast.</p>
+<h2 id="lecture-17---memory-management">Lecture 17 - Memory Management</h2>
+<p>Goals for this lecture:</p>
+<ul>
+<li><strong>Page Tables</strong> - Maintaining <em>performance</em> and <strong>inverted page tables</strong></li>
+<li>Key decisions regarding <strong>virtual memory</strong>
+<ul>
+<li>When pages are <strong>fetched</strong> - <em>demand or pre-paging</em></li>
+<li>What pages are removed - <em>page replacement algorithms</em></li>
+</ul></li>
+<li>The <strong>optimal</strong> and <strong>FIFO</strong> page replacement algorithm</li>
+</ul>
+<h3 id="access-speed-on-multi-level-page-tables">Access Speed on Multi-Level Page Tables</h3>
+<ul>
+<li>The <strong>root page table</strong> is always maintained in memory - this is the main table in the multi-level tree which accesses others. The other page tables are maintained in virtual memory to save space.</li>
+<li>Registers point to the page-tables that are in use. Every time there is a <strong>context switch</strong>, you modify the register so it points to the new page-table.</li>
+</ul>
+<p>Lets say you wanted to change a variable in a process. How would the <strong>fetching</strong> take place?</p>
+<ul>
+<li>Lets say we want to change a variable in memory.</li>
+<li>This instruction requires a physical memory address</li>
+<li>So you go to the page table to get the necessary offset and frame where this variable is stored. This means we are accessing memory for the first time.</li>
+<li>Then you actually have to actually have to access the main memory to change the variable.</li>
+</ul>
+<p>Therefore for a single page-table, you have to access memory twice. For a two page table, you have to access memory three times. This is because you first have to access the <em>root page-table</em>, which directs you to the tables it is indexing.</p>
+<h3 id="translation-look-aside-buffers-tlbs">Translation Look Aside Buffers (TLB's)</h3>
+<p>As you can imagine, constantly accessing main memory can be time-consuming. TLB's are a solution for this. They are <em>buffers</em> that are located inside the memory management unit. They <strong>cache</strong> the most frequently used page table entries. This is close to the CPU and so is much faster. This can be searched directly in <em>parallel</em> to other OS jobs. This means the OS can tell pretty quickly whether or not the TLB has the required page table entry. This system is similar to other types of caches, and relies on <em>locality</em> for speed. The following figure displays the <em>locality</em> and parallel aspects of TLB's at work.</p>
+<div class="figure">
+<img src="img/TLB.png" alt="Translation look aside buffers" />
+<p class="caption">Translation look aside buffers</p>
+</div>
+<p>They have a pretty good slide on the theoretical efficiency of having Translation Look Aside Buffers so I will include that:</p>
+<div class="figure">
+<img src="img/tlbEfficiency.png" alt="TLB Efficiency" />
+<p class="caption">TLB Efficiency</p>
+</div>
 </body>
 </html>

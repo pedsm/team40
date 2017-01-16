@@ -422,3 +422,50 @@ Remember that we do not need all of the pages in memory. This means that we can 
 This means you can have a page table of only pages that you need and this saves memory.
 
 Next lecture we will look at **inverted page tables** for large virtual address spaces. Note that since address translation takes time, it needs to be very fast.
+
+## Lecture 17 - Memory Management
+
+Goals for this lecture:
+
+- **Page Tables** - Maintaining *performance* and **inverted page tables**
+- Key decisions regarding **virtual memory**
+    - When pages are **fetched** - *demand or pre-paging*
+    - What pages are removed - *page replacement algorithms*
+- The **optimal** and **FIFO** page replacement algorithm
+
+### Access Speed on Multi-Level Page Tables
+
+- The **root page table** is always maintained in memory - this is the main table in the multi-level tree which accesses others. The other page tables are maintained in virtual memory to save space.
+- Registers point to the page-tables that are in use. Every time there is a **context switch**, you modify the register so it points to the new page-table.
+
+Lets say you wanted to change a variable in a process. How would the **fetching** take place?
+
+- Lets say we want to change a variable in memory.
+- This instruction requires a physical memory address 
+- So you go to the page table to get the necessary offset and frame where this variable is stored. This means we are accessing memory for the first time. 
+- Then you actually have to actually have to access the main memory to change the variable.
+
+Therefore for a single page-table, you have to access memory twice. For a two page table, you have to access memory three times. This is because you first have to access the *root page-table*, which directs you to the tables it is indexing.
+
+### Translation Look Aside Buffers (TLB's)
+
+As you can imagine, constantly accessing main memory can be time-consuming. TLB's are a solution for this. They are *buffers* that are located inside the memory management unit. They **cache** the most frequently used page table entries. This is close to the CPU and so is much faster. This can be searched directly in *parallel* to other OS jobs. This means the OS can tell pretty quickly whether or not the TLB has the required page table entry. This system is similar to other types of caches, and relies on *locality* for speed. The following figure displays the *locality* and parallel aspects of TLB's at work.
+
+![Translation look aside buffers](img/TLB.png)
+
+They have a pretty good slide on the theoretical efficiency of having Translation Look Aside Buffers so I will include that:
+
+![TLB Efficiency](img/tlbEfficiency.png)
+
+For a TLB Hit, you save 100 nanoseconds because you don't have to access memory twice. The TLB figure showed early shows how this is done.
+
+### Inverted Page tables
+
+- Normal page tables have an entry for each page
+- In an OS there is one **inverted page table** which contains an entry for every frame. It is a global structure- there is one for the whole system - this is important
+- This means that for every frame in physical memory, there exists a table which maps the frame in main memory to the original page in virtual memory.
+- Therefore inverted page tables index by frame number rather than page number.
+- Inverted page tables are implemented as hash tables
+- A *hash function* is used based on the page number to index the inverted page table.
+
+
