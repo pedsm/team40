@@ -1,0 +1,35 @@
+# Glossary
+
+## File systems
+ - Disks:
+ 	- Cylinders: Collection of tracks
+	- Tracks: Concentric circle on single side
+	- Sectors: Segment of a track
+ - Cylinder Skew: an offset added to sector 0
+ - Access time = seek time + rotational delay + transfer time
+ - Seek time = Ts = n x m + s
+  	- n = number of Tracks
+	- m = crossing time per track
+	- s start-up delay
+ - Average rotational latency = half of disk rotation time
+ - Transfer time: tt = b/N x ms per minute/rpm (data transferred per rotation)
+ - Disk scheduling:
+ 	- FCFS
+	- Shortest seek time first
+	- (SCAN) Lift algorithm: Zig zags up and down
+	- C-Scan; Up(reading) and straight down.
+	- Look scan:
+ - User views: define abstractions
+ - Implementation view: define low level Implementation
+ - In UNIX
+	 - Character special files: used for IO devices such as keyboards and printers
+	 - Block special files: Hard drives
+ - File control blocks: only accessible on Kernel mode
+ - Directed acyclic graph (DAG): Allow file sharing cycles are forbidden
+ 	- Dag allows for file sharing(aliases)
+ 	- Cycles can generate infinite loops
+	- Removing files is complicated(links must be removed as well) : Garbage collection is required
+ - Generic graph structure: Cycles are allowed here
+ - Fat(file allocation table)
+ - Log structured file systems(Inodes are next to their data this means that it is contiguous and faster to be read by a spinning hard drive)
+ 	- Require a cleaner thread
