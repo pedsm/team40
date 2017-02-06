@@ -1,0 +1,899 @@
+<h1 id="operating-systems-and-concurrency">Operating Systems and Concurrency</h1>
+<h2 id="lecture-1-introduction"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/introduction1%20%281%29.pdf">Lecture 1 introduction</a></h2>
+<p>Module goals:</p>
+<ul>
+<li>Introduce the fundamental concepts and principles of an Operating System and Concurrency.</li>
+<li>Help to understand how programs rely on the OS.</li>
+<li>Understand the basic writing of concurrent(also known as parallel) code.</li>
+</ul>
+<p>What you should know by now(Labs):</p>
+<ul>
+<li>Fundamentals of OS concepts</li>
+<li>How to use operating system APIs and how OS schedulers work(HUGE CW we had)</li>
+<li>Concurrency</li>
+</ul>
+<h3 id="the-exam">The exam</h3>
+<ul>
+<li>It will be 120 minutes focused on:
+<ul>
+<li>Knowledge</li>
+<li>Understanding</li>
+<li>Application</li>
+</ul></li>
+<li>The exam will be 3 of 4 questions accounting for 75% of the module</li>
+<li>Sample questions and exams are on moodle</li>
+</ul>
+<h4 id="past-examslinks">Past exams(links)</h4>
+<ul>
+<li><a href="http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071747">Exam 2009-2010</a></li>
+<li><a href="http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071748">Exam 2010-2011</a></li>
+<li><a href="http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071749">Exam 2011-2012</a></li>
+<li><a href="http://moodle.nottingham.ac.uk/mod/resource/view.php?id=2071750">Exam 2012-2013</a></li>
+</ul>
+<h3 id="module-content">Module content</h3>
+<blockquote>
+<p><em>This table is confusing but he gave it out like that</em></p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Subject</th>
+<th align="left">Lectures</th>
+<th align="left">Lecturer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Introduction to OS</td>
+<td align="left">1-2</td>
+<td align="left">GDM</td>
+</tr>
+<tr class="even">
+<td align="left">Processes, Thread</td>
+<td align="left">3-4</td>
+<td align="left">GDM</td>
+</tr>
+<tr class="odd">
+<td align="left">Concurrency and Deadlocks</td>
+<td align="left">5-6</td>
+<td align="left">GDM</td>
+</tr>
+<tr class="even">
+<td align="left">Memory management,Swapping and virtual memory</td>
+<td align="left">4-5</td>
+<td align="left">IT</td>
+</tr>
+<tr class="odd">
+<td align="left">File Systems</td>
+<td align="left">3-4</td>
+<td align="left">IT</td>
+</tr>
+<tr class="even">
+<td align="left">Visualization</td>
+<td align="left">1</td>
+<td align="left">IT</td>
+</tr>
+<tr class="odd">
+<td align="left">Revision</td>
+<td align="left">2</td>
+<td align="left">IT</td>
+</tr>
+</tbody>
+</table>
+<h3 id="definitions">Definitions</h3>
+<p>You should know these by now but let me refresh your memory</p>
+<ul>
+<li>File Systems: Physical location of a file(on disk)</li>
+<li>Abstraction: Covering up complex process with nice high level functions and methods</li>
+<li>Concurrency: Allowing programs to run at the same time(without them causing conflicts)</li>
+<li>Security: I can't be bothered to explain this one come on guys</li>
+</ul>
+<h3 id="when-an-os-comes-in-handy">When an OS comes in handy?</h3>
+<p>An OS is basically a massive layer of abstraction between code and the actual Hardware and this comes in handy on a series of occasions because as programmers we can forget about hardware limitations(sometimes) and focus on algorithms.</p>
+<p>Examples of OS abstraction:</p>
+<ul>
+<li>OSs will find a way of dealing with data when memory(RAM) is full, of course this won't be super fast and efficient but it will make the program work(this is called Swap memory on some operating systems)</li>
+<li>OSs will optimize the usage of memory when only certain data in an array is needed instead of all of it</li>
+<li>OSs will handle processes so a computer can &quot;Multi task&quot; making you resource intensive program bearable to use while doing other tasks.</li>
+</ul>
+<p>For these and many more reasons you love your OS because it allows you to be lazy and not have to worry about the hardware most of the time you write code.</p>
+<p>Quote this next line on the exam for some ez marks:</p>
+<blockquote>
+<p><em>“All problems in computer science can be solved by another level of indirection”</em> Dr David Wheeler PhD in computer science 1951</p>
+</blockquote>
+<h3 id="concurrency">Concurrency</h3>
+<p>One of the most important features of modern Operating Systems is their implementations of Concurrency. These allow programmers to implements code that will run asynchronously in multiple CPU cores theoretically speeding up your program to up to twice its normal speed. Modern CPUs are what we call multi-core or multi-threaded this means that one single CPU can do multiple operations at the same time, as long of course they don't rely on the result of another core computation.</p>
+<h4 id="kernel-mode">Kernel mode</h4>
+<p>To achieve concurrency and what is called Multi-programming(concurrent code) most modern OSs work with multiple modes notably Kernel mode and User mode. The OS will transition between both modes in a controlled manner usually having a mode bit which will distinguish between both operation modes.</p>
+<ul>
+<li>Kernel mode is a more complete version of the lower level OS allowing all instructions available for the CPU</li>
+<li>User mode is one level of abstraction above Kernel mode and allows only a subset of instructions which can and will access Kernel mode when necessary</li>
+</ul>
+<p>One way of visualizing this is User mode occurs on applications and programs where kernel mode occurs on the operating system level.</p>
+<h3 id="lecture-conclusions">Lecture conclusions</h3>
+<p>The OS sits on top of hardware and has full access to its features while providing abstraction for the User/Programmer. It also controls the user by switching between different modes with different levels of access to the hardware.</p>
+<p>Different OSs have different purposes and implementations but most of the time the focus on the following: Memory management, CPU scheduling, multi-programming, file system, communication, memory management, interrupt handling, GUI, Browser</p>
+<h2 id="lecture-2-more-introduction"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862030/mod_resource/content/3/introduction2.pdf">Lecture 2 more introduction</a></h2>
+<p>When talking about Operating systems we are most of the time thinking about abstraction and because of that is important to understand how the computer fetches, decode and executes data.</p>
+<div class="figure">
+<img src="img/pic1.png" alt="Simplified computer model(Tanenbaum)" />
+<p class="caption">Simplified computer model(Tanenbaum)</p>
+</div>
+<h3 id="the-basic-cycle">The basic cycle</h3>
+<p>As mentioned before CPUs follow a basic cycle which consists of:</p>
+<ul>
+<li>fetching</li>
+<li>decoding</li>
+<li>executing</li>
+</ul>
+<p>This means that regardless of what the CPU is doing it will always need to get some data, understand it and only them modify it. All CPUs are different as in they have different instruction sets and perform operations slightly differently. However all CPUs have registers as they are essential as they provide really fast memory.</p>
+<p>Registers are extremely fast compared to other types of memory. However they are fairly limited on what they can hold and many times are designed to contain important information for the OS such as a program counter and the mode bit.</p>
+<h3 id="memory-management">Memory management</h3>
+<p>Given the following code the results will be most likely different for the print statement, every time the program is ran.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="dt">int</span> iVar = <span class="dv">0</span>;
+<span class="dt">void</span> main() {
+    <span class="dt">int</span> i = <span class="dv">0</span>;
+    <span class="kw">while</span>(i &lt; <span class="dv">10</span>) {
+        iVar++;
+        sleep(<span class="dv">2</span>);
+        printf(<span class="st">&quot;Address:%u; Value:%d</span><span class="ch">\n</span><span class="st">&quot;</span>,&amp;iVar, iVar);
+        i++;
+    }
+}</code></pre></div>
+<p>This is because the program is printing the position of the variable in memory. And the C program does not care were their variables are stored it only asks the OS to store it. That means although the code might stay the same the OS will put the data on a different location as it sees fit. This is good as we can forget about where our variables and arrays are and only worry about names which are a lot easier to work with.</p>
+<h4 id="physical-and-logical-memory">Physical and Logical Memory</h4>
+<blockquote>
+<p>This whole following paragraph is overly complicated just know that <em>physical address = logical address + offset</em> and look at the picture</p>
+</blockquote>
+<p>Memory is quite easily represented as a array of bits we have a position and a value which can be 0 or 1. This can also easily be translated into a array of bytes depending on how you want to see it. While working with memory as an Operating System you start at position 0 until the MAX(that being the amount of memory the computer). However when dealing with smaller scale programs physical memory is not necessary as we won't(at least we should) require the whole memory of the computer. Thanks to that we have something called logical addressing. This means that at the time you run a program it gets its own memory starting from 0 and going as far as it needs(the OS will define that). For the OS its quite simple to deal with this as it only needs an offset value for example if something in memory 0 logical is on address 1024 in real memory the logical memory at address 1 will be on address 1025 on physical memory. This adds a layer of security as it prevents processes overwriting it other's memory.</p>
+<div class="figure">
+<img src="img/pic2.png" alt="MMU = Memory managment unit" />
+<p class="caption">MMU = Memory managment unit</p>
+</div>
+<h3 id="interrupts">Interrupts</h3>
+<p>An interrupt is a temporary pause on a process. This occur for different reasons such as:</p>
+<ul>
+<li>Timer interrupts caused by the CPU clock(Allows for multi-tasking)</li>
+<li>I/O interrupts, due to I/O completion or error codes</li>
+<li>Software generated(Errors)</li>
+</ul>
+<p>Because the CPU follows a basic cycle an interrupt will only happen after if has finished it cycle this prevents an interrupt from corrupting data in a register and affecting the process when the interrupt is over. This means the CPU only checks for interrupts after every cycle.</p>
+<h3 id="hardware">Hardware</h3>
+<p>Moore's law is one of the most famous laws when it comes to computer hardware and it states:</p>
+<blockquote>
+<p>“The number of transistors on an integrated circuit (chip) doubles roughly every two years”</p>
+</blockquote>
+<p>This means that in theory computer performance should double every two years. However this does not work like that because of many other computing bottlenecks. One of the main reasons this doesn't happen is because having twice as much power doesn't mean we can do two tasks at the same time. At least not in exactly half the time because most of the times we require one task to end before we start the following task.</p>
+<h4 id="parallelism">Parallelism</h4>
+<p>Parallelism occurs when we have two or more tasks running in parallel(at the exact same time) and those two tasks do not overwrite each other. This is often hard to achieve for a number of reasons. However newer CPUs do a lot of work to allow high level languages to address parallelism in an easier manner. Problems such as load balancing and process scheduling are major areas of work for CPU and OS developers as they need to make parallelism more abstract in order to promote smaller developers to use it efficiently and get the most computing efficiency out of their computers.</p>
+<blockquote>
+<p>Previous exam question: &quot;Describe how, in your opinion, recent developments in computer architecture and computer design have influenced operating system design?&quot; One thing to consider in this question is that Windows XP didn't support multi threading while today almost every single consumer grade CPU(for PCs) has at least 2 threads or even 2 cores.</p>
+</blockquote>
+<h4 id="memory-hierarchy">Memory hierarchy</h4>
+<p>This is quite self explanatory but I will mention because it is in the slides. Faster memory is used for processing and slower memory for long term storage following this order:</p>
+<ul>
+<li>CPU cache</li>
+<li>RAM</li>
+<li>Hard Drives</li>
+</ul>
+<h2 id="processes-1"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes1.pdf">Processes 1</a></h2>
+<p>The definition of a process is &quot;the running instance of a program&quot;. A program can be seen as passive as it sits on the disk of the computer while a process is one of its running instances. One program can also be split into multiple processes if designed that way. This allows multi-threaded CPUs to run the program in parallel if the OS supports this feature.</p>
+<div class="figure">
+<img src="img/pic3.png" alt="Representation of a process in memory" />
+<p class="caption">Representation of a process in memory</p>
+</div>
+<p>What is important to understand about that graph is that a process contain key features in memory. A stack, a heap, a data segment and the program code. Both the stack and heap are placed at opposite sides of the memory allocated as they might need to grow in order for the program to complete it's task.</p>
+<p>Because a computer core can only do one instruction at a time modern OSs use a simple technique to simulate multi-tasking by quickly pausing and starting different processes. To achieve this every time a new process is created it is considered a &quot;New&quot; process and as soon as it is ready to be ran it will go into a ready state. The OS will look for processes in a ready state and if there are any it will block the current process(This is done with an interrupt which can also be caused by things such as waiting for input or a file read) for X amount of time and then run the ready process. The blocked process will stay blocked for a certain time to allow other process to be ran. The OS will keep performing that until every program finishes going into an Exit state. This behaviour is explained on the following graph.</p>
+<div class="figure">
+<img src="img/pic4.png" alt="Representation of process states" />
+<p class="caption">Representation of process states</p>
+</div>
+<h4 id="context-switching">Context switching</h4>
+<p>This occurs when the Operating System switches between multiple process in order to generate parallelism. However true parallelism can only occur when you have multiple processors. The actual context switch is the time taken by the CPU to save the current state of the process and switch to the following process. If a context switch is not done properly a process can lose information in registers and corrupt its algorithm.</p>
+<h5 id="the-important-maths">The important maths</h5>
+<p>To do context switching we must limit the amount of time the CPU takes on each process. Because context switching has usually a rather static amount of time on the CPU we can define a long time slice for our processes or a short time slice.</p>
+<ul>
+<li>A short time slice means that processes will all run closer together. However because more CS(context switching) is happening the overall time taken by the CPU to run all processes will be longer</li>
+<li>A longer time slice means that process will have a lower response time as more time is taken by each process making the Operating system less(concurrent) but due to the smaller amount of CS the overall time for all processes to be done will be shorter.</li>
+</ul>
+<blockquote>
+<p>This right here is why we did that whole COURSEWORK! smaller time slices reduce response time while higher ones reduce turnaround time(Ofc if we implemented a static time for CS) So yeah it was useless</p>
+</blockquote>
+<h4 id="program-control-block">Program control block</h4>
+<p>The program control block is what takes care of interrupting processes to allow for CS. These are kernel data structures and contain information that can be used by the OS such as:</p>
+<ul>
+<li>Process id(PID, UID, Parent ID)</li>
+<li>Process control information(State for scheduling)</li>
+<li>Process state information(Registers PC Stack pointer aka all the stuff saved from the CS)</li>
+</ul>
+<p>Because these control low level features of the OS they can only be accessed on kernel mode(logical kernel data structure)</p>
+<h3 id="os-abstraction">OS abstraction</h3>
+<p>To allow CS and scheduling to work properly the OS stores lots of information such as:</p>
+<ul>
+<li>Process tables(Process control blocks)</li>
+<li>Memory tables(Where logical memory is)</li>
+<li>I/O tables(Availability and status of all devices)</li>
+<li>File tables(File system information)</li>
+</ul>
+<p>All this information shouldn't be accessed by the user or the programmer it is all used for abstraction.</p>
+<h4 id="using-the-abstraction">Using the abstraction</h4>
+<p>To actually take advantage of lower level features such as multi threading we can make user mode calls through certain OS dependent libraries to use these functions.</p>
+<ul>
+<li>POSIX(linux library)
+<ul>
+<li>fork() - Unix</li>
+<li>clone() -Linux</li>
+</ul></li>
+<li>WIN32 API (shit OS library)
+<ul>
+<li>NTCreateProcess() -Windows(They can't even name their functions properly)</li>
+</ul></li>
+</ul>
+<p>Because the OS will keep switching between multiple processes those need to be terminated with calls such as:</p>
+<ul>
+<li>exit(), kill() - Unix/linux</li>
+<li>TerminateProcess() - Windows(See they are so bad)</li>
+</ul>
+<h4 id="yeyy-finally-some-code">YEYY Finally some code</h4>
+<p>Here is an example of how to create a multiprocess program on Linux.(Because on windows this is probably like 1000 lines of useless code)</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
+
+<span class="dt">void</span> main()
+{
+    <span class="dt">int</span> iStatus;
+    <span class="dt">int</span> iPID = fork();
+    <span class="kw">if</span>(iPID &lt; <span class="dv">0</span>)
+    {
+        printf(<span class="st">&quot;fork error</span><span class="ch">\n</span><span class="st">&quot;</span>);
+    }
+    <span class="kw">else</span> <span class="kw">if</span>(iPID == <span class="dv">0</span>)
+    {
+        printf(<span class="st">&quot;hello from child process</span><span class="ch">\n</span><span class="st">&quot;</span>);
+        execl(<span class="st">&quot;/bin/ls&quot;</span>, <span class="st">&quot;ls&quot;</span>, <span class="st">&quot;-l&quot;</span>, <span class="dv">0</span>);
+    }
+    <span class="kw">else</span> <span class="kw">if</span>(iPID &gt; <span class="dv">0</span>)
+    {
+        waitpid(iPID, &amp;iStatus, <span class="dv">0</span>);
+        printf(<span class="st">&quot;hello from parent process</span><span class="ch">\n</span><span class="st">&quot;</span>);
+    }
+}</code></pre></div>
+<p>The code can be found on the code directory</p>
+<h2 id="processes-2---scheduling"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes2.pdf">Processes 2 - Scheduling</a></h2>
+<p>In order for an OS to run different processes in a parallel manner(true or not) we need to have some sort of schedulers which prevents the OS of for example repeat the same process over and over again while other processes need to be ran. However most of the times we also want certain processes to have priority over others. For example a mobile phone OS might prioritise the processes which manage phone calls over third party games as the purpose of the device is to do phone calls.</p>
+<h3 id="process-schedulers">Process schedulers</h3>
+<p>Process schedulers can come in different types. Those can be categorized in their Time horizon:</p>
+<ul>
+<li>Long term - Applies to new processes, focus on long processes and avoids CS when efficient and controls parallelism. This is common on computer clusters for high performance tasks. Although these types of schedulers focus on getting one task done at a time it will change between processes to achieve an efficient mix of CPU and I/O bound processes and maximise the usage of both. This focus less on responsiveness and multi-tasking and more on efficient usage of resources.</li>
+<li>Medium term - Controls swapping and focus on a fair split of resources, sometimes delaying some processes and working with smaller subsets of all processes.(Common on modern OSs in conjunction with short term schedulers)</li>
+<li>Short term - This runs a lot more often then the previous one's it is also closely linked to clock interrupts and I/O interrupts to avoid busy waiting(Running a process that cannot do something because it requires something that is not yet available). This is also responsible for organising the ready queue.</li>
+</ul>
+<blockquote>
+<p>Exam question &quot;Where do the process schedulers fit in with the state transitions?&quot; Short term is extremely important for I/O and clock interrupts</p>
+</blockquote>
+<p>Don't get confused systems have all of these events schedulers that run at the same time. A single event scheduler most of the times is not efficient you need to make quick decisions at ms intervals but at the same time you need to focus on efficiency. The only unusual type of scheduler in this list is Long term as most common day tasks don't require that amount of efficiency but rather improve response time.</p>
+<div class="figure">
+<img src="img/pic5.png" alt="Queues in an OS, Understand how different schedulers manage different parts of this diagram" />
+<p class="caption">Queues in an OS, Understand how different schedulers manage different parts of this diagram</p>
+</div>
+<h4 id="pre-emptive-schedulers">Pre-emptive schedulers</h4>
+<p>Schedulers can be differed as well in pre-emptive and non-preemptive schedulers.</p>
+<p>A pre-emptive scheduler is a scheduler that has a clock interrupt, that simply means that if a process is takes X amount of time and has not being interrupted then it will stop it to allow other processes to run. This is the most common type of scheduler in modern operating systems.</p>
+<p>A non-preemptive scheduler is different as a process will only stop if it voluntary says so to the CPU. For example while a process is waiting for a file to be read than it will stop and allow other processes to run.(I/O Interrupt). This is only used on really old Operating systems such as Windows 3.1</p>
+<h3 id="performance-assessment">Performance assessment</h3>
+<p>Because we have so many types of schedulers we need some sort of performance measurement so we can benchmark different schedulers. The most common criteria for schedulers are:</p>
+<blockquote>
+<p>Learn this its ez marks its literally averaging out.</p>
+</blockquote>
+<ul>
+<li>Response time: When a process starts(usually the average is used for comparison)</li>
+<li>Turnaround time: When a process finishes(usually the average)</li>
+<li>Predictability: This makes sure processes are running at roughly the same amount of time between CS.</li>
+</ul>
+<p>Some relations that are obvious is that smaller time slices decrease response time while bigger time slices(clock interrupts) will decrease turnaround times considering the CS time.</p>
+<h3 id="algorithms">Algorithms</h3>
+<p>Here are a list of popular algorithms for schedulers.</p>
+<ul>
+<li>FCFS (First come First serve)</li>
+<li>Shortest job First</li>
+<li>Round robin</li>
+<li>Priority queue</li>
+</ul>
+<h4 id="fcfsfirst-come-first-serve">FCFS(First come first serve)</h4>
+<p>This is fine as it is considered <em>fair</em>, processes created first will get done first. However small processes that could be done a lot before without affecting bigger jobs too much are left behind.</p>
+<h4 id="shortest-job-first">Shortest job First</h4>
+<p>This focus on finishing jobs quickly and reducing the average turnaround time. However it is not <em>fair</em> as a long job started first will only finish after every other small process is done. Even if they are created a long time after the first job. In theory a long process might never finish if new short processes keep being added to the CPU(<em>starvation</em> is the fancy name for this).</p>
+<h4 id="round-robin">Round robin</h4>
+<p>This algorithms is pretty simple it basically means every job is ran for a small amount of time until all processes are fished. Time slices are important to improve Response time and Turnaround. &gt; Time is not wasted here if a process finish earlier the next one starts.</p>
+<h5 id="priority-queues">Priority Queues</h5>
+<p>This is a round robin implementation where processes have priorities, higher priorities get executed first while shared priorities are round robin to the end. If priorities are set right for CPU and I/O bound this will yield the best overall results</p>
+<h2 id="threads"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes3%20%281%29.pdf">Threads</a></h2>
+<p>A process is actually composed of two things. A process is its resources and an execution trace(what the CPU sees the process as) because of this a process can have multiple execution traces allowing the process to do multiple things in parallel. These difference execution traces are called threads.</p>
+<p>As you can see in the following image threads have their own registers and stack memory. However All the code Data and files(Heap and I/O) is shared between all of them as they will need to share information between each other at certain points.</p>
+<div class="figure">
+<img src="img/pic6.png" alt="Single threaded process vs multi threaded process" />
+<p class="caption">Single threaded process vs multi threaded process</p>
+</div>
+<blockquote>
+<p>Processes don't actually have different states but actually their individual threads do as they are the ones that can be ready, blocked or running.</p>
+</blockquote>
+<h3 id="thread-context-switching">Thread Context switching</h3>
+<p>Switching between different threads of course take some time as registers and the tack must change. However it will be faster than switching between processes, this is because threads do share some things, and those usually are stored in slower memory.</p>
+<h4 id="lets-get-real">Let's get real</h4>
+<p><strong>Alight this is pretty complicated boyz so here is some next level example on how this shit works.</strong></p>
+<p>Imagine Word as a process. It will have two threads an I/O thread responsible for showing what you type in the screen and a different thread for spell check. The I/O thread will wait for keyboard presses or mouse clicks to change your cursor position or the document's content, the cursors is an example of stuff that would stay in stack, meaning that apart from the process that changes stuff in the document no one else cares where the cursor is the spell check will check the spelling on the whole file not where the cursor is so this information can stay with the thread. However the actual contents of the file are going to be stored on the heap this means that both the editor and the spell check thread have access to it and both can work with it.</p>
+<p>Now here is the problem if both processes try to change memory in the heap in the same time we might have overwrites. Imagine auto-correct is running while I am typing one process will read the word <em>&quot;helo&quot;</em> and change it to <em>&quot;hello&quot;</em> by adding another <em>l</em>. However between it reading the world <em>&quot;helo&quot;</em> and changing it I typed a space character if there is no control over who reads and write to the file the <em>&quot;hello&quot;</em> will overwrite my space input. Yes on a text editor scenario this is not a big deal but if we are talking about different things modifying an array at the same time for example we might have duplicates appear or elements disappearing. So shared memory has to be used with caution.</p>
+<h1 id="break-time">Break time</h1>
+<p>Alright boyz now I am gonna enlighten you with some real knowledge that you can use to look fancy on the exam, and guess what it comes with some next level interactive code examples! You should know this by this point of your degree but clearly you don't or you wouldn't be here. I am gonna teach you the difference between Stack and Heap!</p>
+<p>Alright the Stack is pretty simple, it is a static size memory. This means that if you need 15 values that will stay of the same size in your code you put them there, the program has very fast access to this memory and this memory will not change in size. This is extremely important because if you remember the graph on memory the stack always come before your program if it gets bigger it will overwrite the code.</p>
+<ul>
+<li>Stack is defined when the program is compiled(logical memory decision not physical memory)</li>
+<li>Stack has a fixed size</li>
+<li>Stack is super fast(because information will never change location)</li>
+<li>The CPU is very efficient on managing stack</li>
+<li>The OS will impose limitations on it's size so you don't do dumb stuff</li>
+</ul>
+<p>If you are on Linux run the following command to check your stack size(if you aren't on linux, mate you should be)(might work on mac who knows)</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ulimit</span> -s</code></pre></div>
+<p>Here is some heavily commented code that I wrote to show you how static sized data stays in the stack while dynamic sized data goes into the stack. Read it run it and understand it because if you don't know this you should. Code is on <strong>code/</strong> directory</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &lt;stdlib.h&gt;</span>
+
+<span class="dt">int</span> main()
+{
+    <span class="co">/*Lets start by creating two values these two are Ints and therefore</span>
+<span class="co">    go in the stack because their size will never be bigger than sizeof(int)</span>
+<span class="co">    they might change but never stop being an int */</span>
+    <span class="dt">int</span> value = <span class="dv">104</span>;
+    <span class="dt">int</span> value2 = <span class="dv">125</span>;
+    printf(<span class="st">&quot;The two are in the stack at positions:</span><span class="ch">\n</span><span class="st">%p and </span><span class="ch">\n</span><span class="st">%p </span><span class="ch">\n</span><span class="st">&quot;</span>, &amp;value, &amp;value2);
+    printf(<span class="st">&quot;Position difference = %d </span><span class="ch">\n</span><span class="st">&quot;</span>, (<span class="dt">int</span>)(&amp;value2 -  &amp;value));
+    <span class="co">/*You can see that they are about in the same position with a difference</span>
+<span class="co">     = sizeof(int) Now i am defining a pointer with malloc this is different</span>
+<span class="co">    because I am using malloc I am telling it to have a size of 1 int but I</span>
+<span class="co">    could tell it to have the size of 100 ints in the case of an array.*/</span>
+    <span class="dt">int</span> *p = (<span class="dt">int</span> *) malloc(<span class="kw">sizeof</span>(<span class="dt">int</span>));
+    printf(<span class="st">&quot;The pointer is at position:%p</span><span class="ch">\n</span><span class="st">&quot;</span>, p);
+    printf(<span class="st">&quot;Position difference = %d </span><span class="ch">\n</span><span class="st">&quot;</span>, (<span class="dt">int</span>)(&amp;value2 - p));
+    <span class="co">/*With this you will be able to see that the difference between the</span>
+<span class="co">    stack elements are constant because they are always placed in the same</span>
+<span class="co">    spot. While the distance between that and the pointer is always changing</span>
+<span class="co">    because the heap is a lot more dynamic*/</span>
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre></div>
+<p>Now this is pretty cool but because we need dynamic objects such as dynamic arrays we need the heap so we can create data structures that are only limited by our Memory. The heap of course will be as big as it needs to be. However it will be slower because we need to find stuff as it will keep moving around if it is changing sizes being allocated and deallocated. If you are working with large amounts of data(for example from a file), you should put the data you are working with in the heap do what you need to do and then remove all the unnecessary part. The heap doesn't have a OS set limit but RAM does.</p>
+<p>By default C puts variables in the stack and puts pointers in the heap, with enough code and knowledge on how the compiler works you can put all your variables in the heap by using pointers instead of variables, but this would be extremely inefficient in speed.</p>
+<p>The heap</p>
+<ul>
+<li>Global for the process</li>
+<li>No OS limit on size</li>
+<li>Slower(only relatively still pretty fast)</li>
+<li>Fragmented memory(Linked lists are not consecutive but rather spread across everywhere)</li>
+<li>Lots of housekeeping(Memory has to be allocated and freed)</li>
+<li>Variables can be resized(Dynamic arrays &gt; linked lists)</li>
+</ul>
+<h3 id="more-threads">More threads</h3>
+<p>By now you are a God of memory management and fully understands the concepts of Heap and Stack, so lets move on to more threads. Now lets see some massive advantages of multi-threading</p>
+<ul>
+<li>Inter-thread communication, they can communicate unlike process(or at least they should communicate)</li>
+<li>No protection boundaries are necessary(threads have one common goal, one thread won't be malicious to another)</li>
+<li>Multi-threaded and multi-core CPUs can share the load of a process.</li>
+<li>Allows for a process to keep running while only one of the threads is interrupted(I/O block)</li>
+</ul>
+<h3 id="thread-implementations">Thread implementations</h3>
+<ul>
+<li>User - you hard code threads and work in user mode(so there will be drawbacks, all threads will be blocked on a clock interrupt and no true parallelism)
+<ul>
+<li>You can simulate threads on OSs that do not support multi-threading</li>
+</ul></li>
+<li>Kernel - you ask your OS to make the OSs for you(kernel mode)
+<ul>
+<li>This requires an OS that has an implementation of multi-threading</li>
+</ul></li>
+<li>Hybrid - a mixture of both
+<ul>
+<li>We make proper kernel threads but we can also have User mode threads inside of each kernel thread.</li>
+</ul></li>
+</ul>
+<h4 id="posix-api">POSIX API</h4>
+<p>You did the coursework you learned this bit.(most importantly I doubt they will put this on the exam)</p>
+<h2 id="more-process-schedulingaka-the-good-ones"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/processes4.pdf">More process scheduling(AKA the good ones)</a></h2>
+<h3 id="multi-level-feedback-queueswindows-7">Multi-level feedback Queues(Windows 7)</h3>
+<p>This is a more flexible approach of priority queues it behaves in the same manner but it can be flexible as in:</p>
+<ul>
+<li>Low priority tasks can be done in FCFS(Fairness)</li>
+<li>Priorities can be dynamic, process that are taking too long and have been ran for a long time can have their priority lowered and vice versa</li>
+<li>Other scheduler can be implemented if something such as reducing response time is required.</li>
+</ul>
+<blockquote>
+<p>Exam question: Explain how you would prevent starvation in a multi-level queue scheduling algorithm? Applying dynamic priority a low priority process that has not been started but has waited X amount of time in the queue can have its priority dynamically increased.</p>
+</blockquote>
+<p>One major advantage of this flexible priority is that it allows us to deal with lower level blocks(Inversion of priority problem). Imagine that a low priority job is working on file X, then a high priority job appear and starts to run but it requires file X, it cannot run until the first process is actually done, that means that now the first process is of high priority due to its relation to the second one.</p>
+<h4 id="multi-level-queues">Multi-level queues</h4>
+<p>On windows 7 Multi-level queues has uses multi-level queues but it does so in two ways. It differs processes in &quot;Real time&quot; and &quot;variable&quot;</p>
+<ul>
+<li>Real time - Processes have fixed priority and are exclusive for kernel tasks and admin operation</li>
+<li>Variable - Implements the dynamic priority level</li>
+</ul>
+<p>In windows 7 regardless of the type of process running a round robin approach is always used in queues. There is code on moodle that shows this behaviour but its overly complicated if you want to take a look here it is <strong><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2720824/course/section/705997/windowsScheduler.zip">link</a></strong> you need windows to run it so I ain't doing that.</p>
+<h4 id="relative-thread-prioritymore-windows-7">Relative thread priority(more windows 7)</h4>
+<p>Every process has a priority and inside of it every thread will have another priority relative to their parent priority creating a dynamic priority system inside of the process itself.</p>
+<div class="figure">
+<img src="img/pic7.png" alt="Priorities in Windows 7" />
+<p class="caption">Priorities in Windows 7</p>
+</div>
+<p>The maximum priority is 15 and the thread priority is +/- 2 the parent thread(or process).</p>
+<h3 id="linux-schedulingfinally-a-proper-os">Linux scheduling(Finally a proper OS)</h3>
+<p>Linux has had a lot of changes on its scheduling but currently and since Kernel 2.6 the process scheduler is called &quot;Completely fair scheduler&quot;(Best OS). Like Multi-level feedback we have two classes:</p>
+<ul>
+<li>Real time
+<ul>
+<li>Real time FIFO</li>
+<li>Real time Round robin</li>
+</ul></li>
+<li>Time sharing(just like windows variables)</li>
+</ul>
+<blockquote>
+<p>Real time applies FIFO(Don't ask why), First come first serve for the first 40 priority levels. The following 100 applies round robin.</p>
+</blockquote>
+<p>CFS(Complety fair scheduler) has what is called a target latency(the amount of time each process should be run at least once) this value is divided by the number of processes to define the time slice. This way in the target latency every process in the queue will run at least once. The major problem here is that if there are two many processes then the time slice will be two small and it will end up reducing the turnaround time because context switching is taking too long as it happens too often. However linux deals with this by setting a minumun time slice also known as (Minimum granularity).</p>
+<p>CFS also uses a weighing scheme, this means that priority is not the main concern but instead it uses priority and <em>&quot;used cpu time&quot;</em> to define the following process. This gives priority where it is needed but instead of dynamic priorities we use weights which ofc are dynamic as used CPU time changes.</p>
+<blockquote>
+<p>On Geert's word this is <em>&quot;fantastic&quot;</em> and all the Linux users here will agree. If you disagree try running tensorflow code on windows.</p>
+</blockquote>
+<h3 id="multi-process-scheduling">Multi process scheduling</h3>
+<p>For modern your schedulers require not only defining which process to run next but also in what core. For this we have two main approaches.</p>
+<ul>
+<li>Single level queue(private queue) - each core has its own queue
+<ul>
+<li>Good because processes will always run in the same core(CS is reduced as we use the same cache every time) this is called CPU affinity</li>
+<li>Load balancing will be off, some cores are going to finish earlier than others</li>
+<li>To fix load balancing you will need to swap processes from one to another core if one is too busy.</li>
+</ul></li>
+<li>Multi level queue(shared queue) - all cores share a big queue
+<ul>
+<li>Load balancing is technically perfect as the free core will always take the next job.</li>
+<li>Processes will lose their cached data if they swap cores</li>
+</ul></li>
+</ul>
+<h4 id="types-of-threads">Types of threads</h4>
+<p>Threads also have different types related to how they run in relation to each other.</p>
+<ul>
+<li>Related threads communicate between one and another and therefore want to be running in parallel, for example multi-core equation solving.</li>
+<li>Unrelated threads do completely different tasks and don't need to run at the same time, for example an auto save function which can run whenever the CPU has time to do it and not necessarily while the user is writing because it doesn't require a change to try to save it will always try to save.</li>
+</ul>
+<div class="figure">
+<img src="img/pic8.png" alt="Example of parallel threads" />
+<p class="caption">Example of parallel threads</p>
+</div>
+<h2 id="concurrency-1"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862036/mod_resource/content/7/concurrency1.pdf">Concurrency 1</a></h2>
+<h3 id="what-is-concurrency">What is concurrency?</h3>
+<p>Concurrency is when a computer simulates or actually run(only on multi-core CPUs) one or more processes in parallel. This actually means that we have multiple threads running at the same time.</p>
+<h3 id="pthreads-posix-api">Pthreads (POSIX API)</h3>
+<p>Pthreads or POSIX api is the linux api for creating multi threaded applications. Of course this is not the only one but this is one of the easier most straight forward implementation</p>
+<h4 id="code-example">Code example</h4>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// include stdio.h, stdlib.h, and pthread.h here</span>
+<span class="dt">int</span> counter = <span class="dv">0</span>;
+<span class="dt">void</span> * calc(<span class="dt">void</span> * number_of_increments)
+{
+    <span class="dt">int</span> i;
+    <span class="kw">for</span>(i = <span class="dv">0</span>; i &lt; *((<span class="dt">int</span>*) number_of_increments);i++)
+    {
+        counter++;
+    }
+}
+<span class="dt">int</span> main()
+{
+    <span class="dt">int</span> iterations = <span class="dv">50000000</span>;
+    pthread_t tid1,tid2;
+    <span class="kw">if</span>(pthread_create(&amp;tid1, NULL, calc, (<span class="dt">void</span> \*) &amp;iterations) == -<span class="dv">1</span>)
+    {
+        printf(<span class="st">&quot;unable to create thread&quot;</span>);
+        exit(<span class="dv">0</span>);
+    }
+    <span class="kw">if</span>(pthread_create(&amp;tid2, NULL, calc, (<span class="dt">void</span> \*) &amp;iterations) == -<span class="dv">1</span>)
+    {
+        printf(<span class="st">&quot;unable to create thread&quot;</span>);
+        exit(<span class="dv">0</span>);
+    }
+    pthread_join(tid1,NULL);
+    pthread_join(tid2,NULL);
+    printf(<span class="st">&quot;The value of counter is: %d</span><span class="ch">\n</span><span class="st">&quot;</span>, counter);
+}</code></pre></div>
+<p>This code is a simple example, it creates two threads with the calc() function running. The main thread will then wait until all the child processes are done before finishing and printing out the final value.</p>
+<p>However there is a major problem with this code as it won't return the expected result due to critical sections.</p>
+<h3 id="critical-sections">Critical Sections</h3>
+<p>As mentioned before CPUs work on what is called a loop, it will fetch information decode that information and then run it. Logically those instructions will take some time. What happens when the code example is ran is that two threads will run at the same time and both will overwrite each other values causing some additions to be lost.</p>
+<p>Lets call the child processes thread 1 and thread 2. Both of them do the simple operation of adding one to the counter. The behaviour I am about to describe is random and won't happen always.</p>
+<p>Thread 1 will read the value of counter and only after that it can add one to it, after that is done the new value of counter will be saved. However lets say both threads read the value of counter on a 1ms interval. Thread one will read the value of 50 on the counter, and thread 2 will do the same. Because thread 1 started first it will save the value 51 in the counter and 1ms after thread 2 will do the same saving the value 51 again. This means one iteration has passed for both of these threads but we only added one to the value of counter instead of 2.</p>
+<p>A critical section is any area where data is being read and modified by more than one process, this section of instructions must have a controlled access to prevent this exact behaviour to repeat.</p>
+<h4 id="race-conditions">Race conditions</h4>
+<p>A race condition is the name given when multiple threads access shared date and the result actually changes depending on the order they access they data.</p>
+<p>This can and have to be removed using synchronisation, by using different mechanisms. Those mechanisms are called multiple exclusion.</p>
+<h4 id="mutual-exclusion">Mutual exclusion</h4>
+<p>The following is as simple example of mutual exclusion(not implemented)</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">do</span>
+{
+    ...
+    <span class="co">// ENTRY to critical section</span>
+    critical section, e.g.counter++;
+    <span class="co">// EXIT critical section</span>
+    remaining code
+    ...
+} <span class="kw">while</span> (...);</code></pre></div>
+<p>To solve race conditions you must satisfy the following requirements:</p>
+<ul>
+<li>Mutual exclusion: only one process can be in a critical section at a time(for some specific data)</li>
+<li>Progress: all processes must be able to enter its critical section at some point in time.</li>
+<li>Fairness: process cannot wait indefinitely.</li>
+<li>The process which set or check for a critical section must be atomic(needs to be done in one CPU cycle)</li>
+</ul>
+<h5 id="approaches">Approaches</h5>
+<p>There are different approaches to make mutual exclusion.</p>
+<ul>
+<li>Software based</li>
+<li>Hardware based</li>
+<li>Based on:
+<ul>
+<li>Mutexes</li>
+<li>Semaphores</li>
+<li>Monitors(Software inside a programming language)</li>
+</ul></li>
+</ul>
+<p>In addition to mutual exclusion, deadlocks must also be taken in consideration.</p>
+<h2 id="concurrency-2---approaches"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862037/mod_resource/content/3/concurrency2.pdf">Concurrency 2 - Approaches</a></h2>
+<p>As mentioned there are multiple approaches to achieve mutual exclusion and we are going to talk a bit more in detail about those.</p>
+<h3 id="software-based">Software based</h3>
+<p>Also known as Peterson's Solution this is known as software based as it doesn’t rely on any hardware.(this implementation is known to work well on old hardware, not so much on newer machines.)</p>
+<p>This solution requires two flags(variables).</p>
+<ul>
+<li>turn: indicates the next process to be ran.</li>
+<li>boolean flag[2]: indicates that a process is ready to enter its critical section</li>
+</ul>
+<p>This algorithm works by running thread 1 and then waiting until thread 2 runs and vice versa, this allows to both run once and let the other run. This is a simple approach but it is not the most efficient.</p>
+<blockquote>
+<p>Things to consider this only work for two threads(i and j)(the reason that flag is a array of size 2) this will</p>
+</blockquote>
+<p>Example code for process I(for process J swap i for j and vice versa)</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">do</span>
+{
+    flag[i] = true; <span class="co">// i wants to enter critical section</span>
+    turn = j; <span class="co">// allow j to access first</span>
+    <span class="kw">while</span> (flag[j] &amp;&amp; turn == j);
+    <span class="co">// whilst j wants to access critical section</span>
+    <span class="co">// and its j’s turn, apply busy waiting</span>
+
+    <span class="co">// CRITICAL SECTION</span>
+
+    flag[i] = false;
+    <span class="co">// remainder section</span>
+} <span class="kw">while</span> (...);</code></pre></div>
+<blockquote>
+<p>Always allow the other process to go first unless you need to run.</p>
+</blockquote>
+<p>This removes any kind of OS based resources and implements the whole multi threading through software(this has drwabacks mentioned before)</p>
+<h4 id="requirements">Requirements</h4>
+<p>This solution will meet all the conditions it will be fair, always allow the next process to run when not in critical section(busy waiting happens).</p>
+<p>This also satisfy progress as both processes alternate and both will always end up running.</p>
+<h4 id="drawbacks">Drawbacks</h4>
+<p>This implementation requires busy waiting, this means that one process has to wait for the other one to finish before it runs again, this means that if the thread that is in its critical section is interrupted the other process will waste CPU time by being stuck in an infinite loop this of course will stop with an interrupt eventually but it still wastes CPU work time.</p>
+<h3 id="hardware-implementation">Hardware implementation</h3>
+<p>The hardware implementation works in a completely different way as instead of preventing threads from doing what they need to do it will actually prevent the OS from starting the other thread by blocking interrupt. This technique is called Disable interrupts.</p>
+<p>This works fine in single CPU machines but it is a lot less efficient on modern CPUs as it removes OS based optimizations.</p>
+<h4 id="how-to-do-it">How to do it</h4>
+<p>The way this happens as it simulates multiple instructions as a single hardware instruction, although it is not. To achieve this you must implement methods such as:</p>
+<ul>
+<li>test_and_set();</li>
+<li>swap_and_compare();</li>
+</ul>
+<h5 id="test_and_set">test_and_set()</h5>
+<p>This must be done in an atomic unit as it won't be overwritten.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// Test and set method</span>
+boolean test_and_set(boolean \* lock) {
+    boolean rv = \*lock;
+    \*lock = true;
+    <span class="kw">return</span> rv;
+}
+<span class="co">// Example of using test and set method</span>
+<span class="kw">do</span> {
+    <span class="co">// WHILE the lock is in use, apply busy waiting</span>
+    <span class="kw">while</span> (test_and_set(&amp;lock));
+    <span class="co">// Lock was false, now true</span>
+    <span class="co">// CRITICAL SECTION</span>
+    ...
+    lock = false;
+    ...
+    <span class="co">// remainder section</span>
+} <span class="kw">while</span> (...)</code></pre></div>
+<h5 id="compare_and_swap">compare_and_swap()</h5>
+<p>Both implementations will result on busy waiting but this might not be a problem if the critical sections are fairly small.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// Compare and swap method</span>
+<span class="dt">int</span> compare_and_swap(<span class="dt">int</span> \*lock, <span class="dt">int</span> expected, <span class="dt">int</span> new_value) {
+    <span class="dt">int</span> temp = \*lock;
+    <span class="kw">if</span>(\*lock == expected)
+    \*lock = new_value;
+    <span class="kw">return</span> temp;
+}
+<span class="co">// Example using compare and swap method</span>
+<span class="kw">do</span> {
+    <span class="co">// While the lock is in use (i.e. == 1), apply busy waiting</span>
+    <span class="kw">while</span> (compare_and_swap(&amp;lock, <span class="dv">0</span>, <span class="dv">1</span>) != <span class="dv">0</span>);
+    <span class="co">// Lock was false, now true</span>
+    <span class="co">// CRITICAL SECTION</span>
+    ...
+    lock = <span class="dv">0</span>;
+    ...
+    <span class="co">// remainder section</span>
+} <span class="kw">while</span> (...);</code></pre></div>
+<p>Both of these implementations, hardware and software use busy waiting(not optimal but useful), Starvation is possible and deadlocks are possible what makes these implementations outdated and not optimal.</p>
+<h2 id="concurrency-3---higher-level-approaches"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862038/mod_resource/content/3/concurrency3.pdf">Concurrency 3 - Higher level approaches</a></h2>
+<h3 id="mutexes">Mutexes</h3>
+<p>A mutex is shared variable between processes that can be represented as a boolean, processes will check this variable before they start they critical section an manipulate this variable in order to allow or block other threads to run their critical sections.</p>
+<p>Because we require doing this in an atomic manner we have higher level functions to do the checking and modification of the mutexes.</p>
+<p>The methods will be:</p>
+<ul>
+<li>acquire() - checks if program can run its critical section, if available change it's state and run, otherwise wait.</li>
+<li>release() - allows other programs to run their critical section.</li>
+</ul>
+<h4 id="basic-implementation">basic implementation</h4>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">acquire() {
+    <span class="kw">while</span>(!available) ;
+        <span class="co">// busy wait</span>
+    available = false;
+}
+
+release() {
+    available = true;
+}</code></pre></div>
+<p>Counter implementation with Mutex lock(POSIX API)</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">//includes here</span>
+<span class="dt">int</span> sum = <span class="dv">0</span>;
+pthread_mutex_t lock; <span class="dt">void</span> \* calc(<span class="dt">void</span> \* number_of_increments)
+{
+    <span class="dt">int</span> i;
+    <span class="kw">for</span>(i = <span class="dv">0</span>; i &lt; \*((<span class="dt">int</span>\*) number_of_increments);i++)
+    {
+        pthread_mutex_lock(&amp;lock);
+        sum++;
+        pthread_mutex_unlock(&amp;lock);
+    }
+}
+<span class="dt">int</span> main()
+{
+    <span class="dt">int</span> iterations = <span class="dv">50000000</span>;
+    pthread_t tid1,tid2;
+    pthread_mutex_init(&amp;lock,NULL);
+    <span class="co">// no error checking for clarity/brevity</span>
+    pthread_create(&amp;tid1, NULL, calc, (<span class="dt">void</span> \*) &amp;iterations);
+    pthread_create(&amp;tid2, NULL, calc, (<span class="dt">void</span> \*) &amp;iterations);
+    pthread_join(tid1,NULL);
+    pthread_join(tid2,NULL);
+    printf(<span class="st">&quot;the value of sum is: %d</span><span class="ch">\n</span><span class="st">&quot;</span>, sum);
+}  </code></pre></div>
+<p>Now implementing semaphores we make sure that the result will be consistent. Because busy waiting occurs we must make sure that the critical section is small as possible.</p>
+<h3 id="semaphores">Semaphores</h3>
+<p>Semaphores work in the same way as mutexes, as long as they are binary. However Semaphores don't need to be binary and can have values from 0-N.</p>
+<p>A Semaphore has the same methods as a mutex lock, However instead changing values from true to false it decreases every time a wait is called and increases every time a post is called.</p>
+<p>A semaphore has another key diffenrece if a process cannot run it will be put to sleep, avoiding busy waiting. A sleeping process is inside a <em>&quot;Blocked queue&quot;</em> which will be called as soon as the semaphore is posted.</p>
+<p>Conceptual definition:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">typedef</span> <span class="kw">struct</span> {
+    <span class="dt">int</span> value;
+    <span class="kw">struct</span> process * list;
+} semaphore;
+
+wait(semaphore * S) {
+    S-&gt;value--;
+    <span class="kw">if</span>(S-&gt;value &lt; <span class="dv">0</span>) {
+        add process to S-&gt;list
+        block();
+    }
+}
+
+signal(semaphore * S) {
+    S-&gt;value++;
+    <span class="kw">if</span> (S-&gt;value &lt;= <span class="dv">0</span>) {
+        remove a process P from S-&gt;list;
+        wakeup(P);
+    }
+}</code></pre></div>
+<h4 id="counter-implementation">Counter implementation</h4>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// includes here, e.g. semaphore.h</span>
+sem_t s;
+<span class="dt">int</span> sum = <span class="dv">0</span>;
+<span class="dt">void</span> * calc(<span class="dt">void</span> * number_of_increments)
+{ <span class="dt">int</span> i;
+    <span class="kw">for</span>(i = <span class="dv">0</span>; i &lt; *((<span class="dt">int</span>*) number_of_increments);i++)
+    { sem_wait(&amp;s);
+        sum++;
+        sem_post(&amp;s);
+    }
+}
+<span class="dt">void</span> main()
+{ <span class="dt">int</span> iterations = <span class="dv">50000000</span>;
+    pthread_t tid1,tid2;
+    sem_init(&amp;s,<span class="dv">0</span>,<span class="dv">1</span>);
+    <span class="co">// no error checking for clarity/brevity</span>
+    pthread_create(&amp;tid1, NULL, calc, (<span class="dt">void</span> *) &amp;iterations);
+    pthread_create(&amp;tid2, NULL, calc, (<span class="dt">void</span> \*) &amp;iterations);
+    pthread_join(tid1,NULL);
+    pthread_join(tid2,NULL);
+    printf(<span class="st">&quot;The value of sum is: %d</span><span class="ch">\n</span><span class="st">&quot;</span>, sum);
+}</code></pre></div>
+<h4 id="problems">Problems</h4>
+<ul>
+<li>Starvation: If the queuing is not applied properly starvation might occur.</li>
+<li>Deadlocks: Processes may never run if two processes that are waiting need to run but they require each other to run before hand.</li>
+</ul>
+<p>Mutexes and deadlocks are good and useful but are really complex and programming with them usually leads to errors.</p>
+<h2 id="concurrency-4-the-next-level-bit"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862039/mod_resource/content/8/concurrency4.pdf">Concurrency 4 the next level bit</a></h2>
+<h3 id="the-bounded-buffer-problemget-ready">The bounded buffer problem(get ready)</h3>
+<p>Just do the coursework again.</p>
+<p>This problem relies on having at least one producer thread and a consumer thread. You will also have a buffer of a set size, this will be an array that is going to contain the processes that must be done. A producer will put a job in the buffer(assuming there is space in the buffer) and the consumers will consume these jobs as long as there are jobs to be done. This represent a simple scheduler. However we can make this scheduler more complex by adding priority sorting and priority weighing either to our producer(on the buffer itself) or on the consumer as it chooses the next element to be executed.</p>
+<p>We must take in consideration that our buffer is shared and therefore any changes to it must be done in a critical section, to prevent race conditions. This includes a sync(for keep changing on the buffer), empty(to allow consumers to wait) and full(to allow producers to wait). This can obviously be simplified if the sync is put before the condition checking but it will also reduce parallelism. A counting semaphore can be used to allow multiple consumers to run at the same time, considering that they won't change the buffer at the same time(this of course will require the empty semaphore) this increases parallelism and reduce runtime(assuming processing a job takes a long time).</p>
+<h2 id="concurrency-5-dining-philosophers-problem"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862039/mod_resource/content/8/concurrency4.pdf">Concurrency 5 Dining philosophers problem</a></h2>
+<p>This problem can be defined simply by a set of conditions.(see figure 9)</p>
+<ul>
+<li>There are a set of philosophers on a table</li>
+<li>In between each philosopher there is a fork</li>
+<li>A philosopher requires both forks to eat the food(Meaning that the others next to him cannot eat while they do)</li>
+</ul>
+<div class="figure">
+<img src="https://i.gyazo.com/0f06d01cb96bf98976f3706c848e5073.png" alt="Dining philosophers problem" />
+<p class="caption">Dining philosophers problem</p>
+</div>
+<p>One simple algorithm to make this work is make a philosopher pick up the fork on his left and wait until the right one is available. However a deadlock can occur if all philosophers pick up their forks at the same time. this makes it so all of them have to wait indefinitely.</p>
+<p>One simple way to solving this is to set a random limited amount of time before putting their forks down. This will solve the problem. Another one is having a shared fork in the middle that will be used making sure at least one philosopher is eating at a time.</p>
+<p>A global mutex lock can be implemented to allow only one philosopher is allowed to pick up forks at a time.</p>
+<h3 id="now-lets-skip-the-bs">Now lets skip the BS</h3>
+<p>There are many ways to implement this. However the best way will improve parallelism and prevent deadlocks at all times. To do so we require the following:</p>
+<ul>
+<li>A state variable to every philosopher
+<ul>
+<li>eating</li>
+<li>thinking</li>
+<li>hungry(ready)</li>
+</ul></li>
+<li>One semaphore per philosopher initialized to 0
+<ul>
+<li>The philosopher goes to sleep if their neighbours are eating</li>
+<li>the neighbours wake up the philosopher when they finish eating.</li>
+</ul></li>
+</ul>
+<p>This means that one philosopher will start pick up their forks and put the neighbours to sleep this means someone that is not a neighbour to start as well putting their neighbours to sleep. After one finishes it checks if one of their neighbours is ready to eat(hungry no neighbours eating) and then wakes one of them up.</p>
+<p>This of course requires the critical sections to be synchronised.</p>
+<h4 id="code-example-1">Code example</h4>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#define N 5</span>
+<span class="ot">#define THINKING 1</span>
+<span class="ot">#define HUNGRY 2</span>
+<span class="ot">#define EATING 3</span>
+<span class="dt">int</span> state[N]; <span class="co">// keeps track of state</span>
+sem_t p[N]; <span class="co">// sends philosopher to sleep</span>
+sem_t sync; <span class="co">//</span>
+<span class="dt">void</span> * philosopher(<span class="dt">void</span> * id)
+{
+    <span class="dt">int</span> i = (<span class="dt">int</span>) id;
+    <span class="kw">while</span>(<span class="dv">1</span>)
+    {
+        printf(<span class="st">&quot;%d is thinking</span><span class="ch">\n</span><span class="st">&quot;</span>, i);
+        take_forks(i);
+        printf(<span class="st">&quot;%d is eating</span><span class="ch">\n</span><span class="st">&quot;</span>, i);
+        put_forks(i);
+    }
+}
+<span class="dt">void</span> take_forks(<span class="dt">int</span> i)
+{
+    sem_wait(&amp;sync);
+    state[i] = HUNGRY;
+    test(i);
+    sem_post(&amp;sync);
+    sem_wait(&amp;p[i]);
+}
+<span class="dt">void</span> test(<span class="dt">int</span> i)
+{
+    <span class="dt">int</span> left = (i + N - <span class="dv">1</span>) % N;
+    <span class="dt">int</span> right = (i + <span class="dv">1</span>) % N;
+    <span class="kw">if</span>(state[i] == HUNGRY
+        &amp;&amp; state[left] != EATING
+        &amp;&amp; state[right] != EATING) {
+        state[i] = EATING;
+        sem_post(&amp;p[i]); <span class="co">// wake up philosopher</span>
+    }
+}
+<span class="dt">void</span> put_forks(<span class="dt">int</span> i)
+{
+    <span class="dt">int</span> left = (i + N - <span class="dv">1</span>) % N;
+    <span class="dt">int</span> right = (i + <span class="dv">1</span>) % N;
+    sem_wait(&amp;sync);
+    state[i] = THINKING;
+    test(left);
+    test(right);
+    sem_post(&amp;sync);
+}</code></pre></div>
+<p>This allows maximum parallelism as it only blocks philosophers that are not able to sleep and it also avoids busy waiting.</p>
+<h2 id="deadlocks"><a href="http://moodle.nottingham.ac.uk/pluginfile.php/2862040/mod_resource/content/4/deadlocks1.pdf">Deadlocks</a></h2>
+<p>A deadlock occurs when two processes require each other to run, and because of that they get stuck on an infinite waiting list. The most common occurrence of deadlocks is when two processes require the same resource and both each get one. This means that none are going to run and they won't ever release their resources.</p>
+<p>Deadlocks can occur both locally or over a network, assuming resources are being shared through a network(Databases, network printers, etc.). This should explain how to detect, prevent and avoid them.</p>
+<p>Conditions for a deadlock(all must be met)</p>
+<ul>
+<li>Mutual exclusion(A resource can be assigned to at most one process at a time).</li>
+<li>Hold and wait condition(A resource can be held while requesting more resources).</li>
+<li>No preemption: Resources cannot be taken from other process</li>
+<li>Circular wait: there is a circular chain of two or more processes waiting for each other.</li>
+</ul>
+<p>No deadlocks will occur if one of these is not satisfied.</p>
+<h3 id="graphs">Graphs</h3>
+<p>Deadlocks can be represented with graphs.</p>
+<ul>
+<li>A square represented resources</li>
+<li>A circle represents processes</li>
+<li>An arrow represents a request or a release</li>
+</ul>
+<p>If a process has an arrow which can come back to itself(a circle) than a deadlock can occur(Figure 10).</p>
+<div class="figure">
+<img src="https://i.gyazo.com/bd0292b56af00ff874ffb09b379fb677.png" alt="Modelling for deadlocks" />
+<p class="caption">Modelling for deadlocks</p>
+</div>
+<p>A table can also be used to represent order of request and releases, this allows for easier visualization of resources and therefore deadlocks.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Process A</th>
+<th align="left">Process B</th>
+<th align="left">Process C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Request R</td>
+<td align="left">Request S</td>
+<td align="left">Request T</td>
+</tr>
+<tr class="even">
+<td align="left">Request S</td>
+<td align="left">Request T</td>
+<td align="left">Request R</td>
+</tr>
+<tr class="odd">
+<td align="left">Release R</td>
+<td align="left">Release S</td>
+<td align="left">Release T</td>
+</tr>
+<tr class="even">
+<td align="left">Release S</td>
+<td align="left">Release T</td>
+<td align="left">Release R</td>
+</tr>
+</tbody>
+</table>
+<p>To better visualize this we can use this information to model a graph and then look for circular patterns.</p>
+<div class="figure">
+<img src="https://i.gyazo.com/5150343a86765eb90e954e800f998f61.png" alt="Graphical visualization of the table" />
+<p class="caption">Graphical visualization of the table</p>
+</div>
+<p>One the last figure we can see a circular pattern what means that this system can deadlock.</p>
+<blockquote>
+<p>Algorithm, to quickly identify this just run a depth first search if you ever return a previously visited node then the algorithm can deadlock.</p>
+</blockquote>
+<h4 id="matrix-approach-to-deadlocks">Matrix approach to deadlocks</h4>
+<p>Ok boyz this is easier than it seems so chill. Basically if you have multiple resources like multiple printers you can easily represent this in an matrix to detect deadlocks based on a current state and the resources being requested.</p>
+<p>To start with we define matrixes like this:</p>
+<div class="figure">
+<img src="https://i.gyazo.com/20cb1873f7eb96ea2f91d9f1680861c8.png" alt="Matrix template" />
+<p class="caption">Matrix template</p>
+</div>
+<p>The list of E1,E2... define your resources while A1,A2... define the current available resources. The C matrix define the resources used by processes(by row) and the R matrix defines the resources being requested.</p>
+<div class="figure">
+<img src="https://i.gyazo.com/cf2b3721de3a7bae8940f39ca6a5b084.png" alt="Matrix example" />
+<p class="caption">Matrix example</p>
+</div>
+<p>Lets consider figure 13 to do an example. We can see the resources being used by each process on C, and the resources to be requested on R. First we need to define what process is going to be ran, if we see the Available resources 'A' neither process 1 or 2 can run as they require one scanner and one CD rom both not available. However process 3 can, if no process can be run at a given point then we have a deadlock.</p>
+<p>As process 3 can be ran then we assume that is done and we add the current allocated resources [0,1,2,0] back to available and run through all processes again. We repeat this until we finish all processes in the matrix. If we can finish all process that means we didn't hit a deadlock.</p>
+<h3 id="deadlock-recovery">Deadlock recovery</h3>
+<p>This can be applied using the previously mentioned methods. However they are reactive, this means they won't prevent deadlock but they will try to recover from it doing things such as deallocating resources from one thread to allow another one to run.</p>
+<h3 id="deadlock-avoidance">Deadlock avoidance</h3>
+<p>If we understand the behaviour of processes we can avoid deadlocks by making processes run at different times. The following graph allows you to see this in action.</p>
+<div class="figure">
+<img src="https://i.gyazo.com/d733d4c0d0dc735b76d4a0e4bf71aea7.png" alt="Resource trajectories" />
+<p class="caption">Resource trajectories</p>
+</div>
+<p>In figure 14 we have an example the represents the progress of two processes A and B represented on the X and Y axis respectively. As our end result we want to reach u(where both processes finish), we can also see that for certain parts of the process they will need the printer and plotter for a certain amount of time. The areas shaded is where both processes need the same resource. Knowing this information we can force processes to run to avoid the shaded areas. A safe state is any point where you can avoid a deadlock. That means that the points between l1 and l2 with l5 and l6 although the program is not deadlocked, it actually will run into a deadlock, this is called an unsafe space.</p>

@@ -42,6 +42,7 @@
 \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
 
 \begin{document}
+
 \title{Software Maintenance}
 \author{Rishi Parmar}
 \maketitle
@@ -270,5 +271,88 @@ You can implement as many interfaces as you want. In general, abstract classes a
 
 \subsubsection{Packages}
 A Package can be defined as a grouping of related types (classes, interfaces, enumerations and annotations ) providing access protection and name space management. The main reason is to prevent naming conflicts, to control access, and to make searching types such as classes and interfaces a lot easier.
+
+\section{Lecture 3 - OO Analysis \& Design with UML}
+
+UML stands for \emph{Unified Modelling Language} and is a graphical notation system designed to help document object orientated software systems. These are good for capturing the software architecture regardless of the implementation language. Overall it helps to manage the complexity of big projects. It also helps for when you want to re-use the design.
+
+\subsection{Use Case Diagrams}
+
+Use case diagrams are an example of behaviour \emph{diagrams}. My early definition for this expressed the \emph{dynamic} nature of such diagrams. Use case diagrams involve:
+
+\begin{itemize}
+    \item Actors $\longrightarrow$ These are entities that interface with the system - can be people or even another system. They are split into roles
+    \item Use cases $\longrightarrow$ These are based on \emph{user stories}. These are derived from discussions with stakeholders. Use cases represent what the actor wants your system to do for them.
+    \item Use case specification $\longrightarrow$ specification that formally describes the complete flow of activity from the actors point of view.
+    \item Relationships $\longrightarrow$ Simply arrows and  \emph{include} or  \emph{extend} to show relationships between actors \& use cases, as well as use cases' relationships with other use cases. The figure shown below makes this easier to understand. Just remember that multiple use cases can share a piece of the same functionality. For example a Manager needs to be able to log into a site as well as a user. \emph{include} and  \emph{extends} share similar concepts to inheritance. \emph{Include} is used when multiple use cases share a piece of functionality. \emph{extends} is when activities \emph{might} be performed as part of another activity but are not mandatory for the case to run successfully. It adds more capability.
+\end{itemize}
+
+\includegraphics[scale = 0.6]{useCase.png}
+
+\subsubsection{Use case specification}
+
+Includes all the detail about the case. Includes:
+
+\begin{itemize}
+    \item Use case name
+    \item Use case purpose
+    \item Pre-condition(s)
+    \item Base Path (optimistic flow)
+    \item Alternative Paths  - includes errors and every possible way the system can be (ob)used
+    \item Post-condition(s)
+\end{itemize}
+
+\subsection{Activity Diagrams}
+
+\includegraphics[scale = 0.9]{activityDiagram.png}
+\newpage
+
+Components include:
+\begin{itemize}
+    \item Activities $\longrightarrow$ State that is left once the activity is completed (bubble)
+    \item Activity edge $\longrightarrow$ Arrow shown after activity I think
+    \item Synchronisation bar$\longrightarrow$ black bar to show synchronisation
+    \item Decision diamond $\longrightarrow$ Diamond that shows decisions lol
+    \item Start and Stop markers $\longrightarrow$ Used to define entry and exist points (black circles)
+    \item Swim lane $\longrightarrow$ groups things performed by the same \emph{actor}
+\end{itemize}
+
+\subsection{Sequence Diagrams}
+\includegraphics{sequenceDiagram.png}
+
+\section{Testing and shit}
+\subsection{Unit Testing}
+
+\begin{itemize}
+    \item Tests the \textbf{building blocks} of the software
+    \item Allows to focus on small units
+    \item Makes it easier to locate errors
+    \item Can test components separately and in parallel
+    \item Used as form of regression testing (checking for errors after changes)
+    \item Can use JUnit in eclipse
+\end{itemize}
+
+In terms of WHAT to test, testing boundaries are very important e.g variables with limits. Special values such as 0 are also important. You need to think of all logical paths and exercise them via testing. Here is an example of a Junit test on an object.
+
+\begin{lstlisting}
+import org.junit.Test;
+import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+
+public class TestJunit1 {
+
+   String message = "Robert";Robert
+   MessageUtil messageUtil = new MessageUtil(message);
+
+   @Test
+   public void testPrintMessage() {testPrintMessage
+        System.out.println("Inside testPrintMessage()");    
+        assertEquals(message, messageUtil.printMessage());     
+      }
+}
+
+\end{lstlisting}
+
+\textbf{Test Driven Development} is when we write the test first. These can be derived from business requirements which ensures you meet the specification.
 
 \end{document}
