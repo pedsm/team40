@@ -129,3 +129,17 @@ xs 'minus' ys  = if single xs then xs else xs \\ ys
 llSolver :: Grid -> [Grid]
 llSolver  = filter valid . collapse . fix . prune . choice
 ```
+
+
+## Cw1 - Game A.I.
+
+### Game trees:
+To use a game tree you will need to define a maximum depth, and expand every single possible outcome.
+
+1. Produce the game trees
+2. Label each leaf with the winner or with B if the game is a draw
+3. Work up the grid(By copying the child's classification to their parents)
+4. Decide which is the best possible next step
+
+### Checking
+While checking for winners make one check row function and reapply that to matrix operations of the same board.
