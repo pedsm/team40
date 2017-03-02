@@ -143,3 +143,37 @@ To use a game tree you will need to define a maximum depth, and expand every sin
 
 ### Checking
 While checking for winners make one check row function and reapply that to matrix operations of the same board.
+
+# A simple evaluator
+This is a simple evaluator which evaluates expressions with a division operator. This is done recursively and uses the Maybe monad to achieve error checking(for division on 0)
+
+```Haskell
+--Simple div evaluator
+data Expr = Val Int | Div Expr Expr
+
+eval :: Expr -> Maybe Int
+eval(Val n) = Just n
+eval(Div x y) = 
+  case eval n of
+    Nothing -> Nothing
+    Just n -> case eval y of
+      Nothing -> Nothing
+      Just m -> safediv n m
+
+safediv :: Int -> Int -> Maybe Int
+safediv _ 0 = Nothing
+safediv n m = Just(x 'Div' y)
+
+--More error checking with fancy stuff
+--I will call this fancy error propagating monad(aka bind), this evaluates Maybe types and only follows with it in the case of a successful result
+--(>>=)
+eval(Val n) = Just n
+eval(Div x y) = eval x >>= (\n)
+                eval y >>= (\m)
+-- Now the op thing is that is applied automatically to do notation. Now watch this
+eval :: Expr -> Maybe Int
+eval(Val n) = Just n
+eval(Div x y) = do n <- eval x 
+                   m <- eval y
+                   safediv n m
+```
