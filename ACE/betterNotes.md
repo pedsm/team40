@@ -141,4 +141,4 @@ public Vector implements ADT {
 
 The whole reason we have abstract data structures is so we can theorise about very complex but efficient ways of handling data without having to care about implementation. For example defining an ADT for an array which also stores it's length sounds very simple at first but it brings huge benefits as it allows certain operations such as finding the last object, finding the middle object, and even pushing an element to the end to all become $O(1)$ where before they would be $O(n)$
 
-## Let's go through a bunch of data structures really fast.
+## And here is a bunch of examples you probably need to know 
