@@ -2,6 +2,7 @@
 
 Jonny if you are reading this I am sorry but your notes are garbage so I am starting new ones.
 
+# Algorithms basics
 ## Lecture 1 - Get ready to RUMBLE!!
 
 ![Mad algorithms](https://media.giphy.com/media/3o6Yg4GUVgIUg3bf7W/giphy.gif?response_id=59205e40e56f576c41a930ab)
@@ -47,3 +48,62 @@ A high level representation of an algorithm in a syntax free language('Basically
 ### The random access machine
 
 >I bet you 1 quid it is not coming in the exam 
+
+
+## Lecture 2 the BIG O
+
+![Lol what is this](https://media.giphy.com/media/LgB2sFodXQbAI/giphy.gif?response_id=59206612d0094723df4ed2da)
+
+Alrith get ready for like 20% of this course *spoiler alert* the other 80% is [trees](https://reddit.com/r/trees)
+
+Big O notation is a way of representing how the *average* runtime of an algorithm changes in relation to the input size. **Boom** this should guarantee you 10% of the exam. 
+
+### Calculating big O  
+
+To calculate big O is quite simple, first you will need to find how many primitive operations occur in base of n. Let's say an algorithm has the following o(*operations*).
+
+\[o =  5 \log_2 n + 2\]
+
+First we remove all terms that are not related to n, because we want to find how the runtime changes in relation to n and not the actual runtime(*don't ask me why becuase I think this is dumb as well*)
+
+\[5 \log_2 n\]
+
+Again we will now remove the 5 as it will stay constant regardless of the value of n. And finally we arrive to find the actual *time complexity* fancy word for what big O represents. We can also remove the base of the log function as that is also constant.
+
+\[o \in O(\log n)\]
+
+> Learn this because for some reason it is incredibly important 
+
+### Big O
+Grows at most as fast as
+\[f(n) \text{ is } O(g(n)) \] 
+And 
+\[f(n) \leq c g(n) \text{ for all } n \geq n_{0} \]
+
+### Big $\Omega$
+Grows at least as fast as
+\[f(n) \text{ is } \Omega(g(n)) \] 
+And 
+\[f(n) \geq c g(n) \text{ for all } n \geq n_{0} \]
+
+### Big $\Theta$
+Big O + Big $\Omega$
+\[f(n) \text{ is } \Theta(g(n)) \] 
+And 
+\[f(n) \geq c' g(n) \]
+\[f(n) \leq c'' g(n) \]
+\[\text{ for all } n \geq n_{0} \]
+
+## The 7 deadly functions
+Here is the list of the most important functions you must take in consideration while talking about big O. Also draw these so you are fully understand them. This list go from best to worse.
+![Mad exponential growth](https://media.giphy.com/media/3oKIPpFhwsMNrRIjN6/giphy.gif)
+
+1. Constant      = 1
+2. Logarithmic   = $\log n$
+3. Linear        = $n$
+4. n Log n       = $n\log n$
+5. Quadratic     = $n^2$
+6. Cubic         = $n^3$
+7. Exponential   = $2^n$ 
+
+# Data structures
