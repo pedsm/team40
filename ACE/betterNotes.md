@@ -62,37 +62,37 @@ Big O notation is a way of representing how the *average* runtime of an algorith
 
 To calculate big O is quite simple, first you will need to find how many primitive operations occur in base of n. Let's say an algorithm has the following o(*operations*).
 
-\[o =  5 \log_2 n + 2\]
+$$o =  5 \log_2 n + 2$$
 
 First we remove all terms that are not related to n, because we want to find how the runtime changes in relation to n and not the actual runtime(*don't ask me why becuase I think this is dumb as well*)
 
-\[5 \log_2 n\]
+$$5 \log_2 n$$
 
 Again we will now remove the 5 as it will stay constant regardless of the value of n. And finally we arrive to find the actual *time complexity* fancy word for what big O represents. We can also remove the base of the log function as that is also constant.
 
-\[o \in O(\log n)\]
+$$o \in O(\log n)$$
 
 > Learn this because for some reason it is incredibly important 
 
 ### Big O
 Grows at most as fast as
-\[f(n) \text{ is } O(g(n)) \] 
+$$f(n) \text{ is } O(g(n)) $$ 
 And 
-\[f(n) \leq c g(n) \text{ for all } n \geq n_{0} \]
+$$f(n) \leq c g(n) \text{ for all } n \geq n_{0} $$
 
 ### Big $\Omega$
 Grows at least as fast as
-\[f(n) \text{ is } \Omega(g(n)) \] 
+$$ f(n) \text{ is } \Omega(g(n)) $$
 And 
-\[f(n) \geq c g(n) \text{ for all } n \geq n_{0} \]
+$$ f(n) \geq c g(n) \text{ for all } n \geq n_{0} $$
 
 ### Big $\Theta$
 Big O + Big $\Omega$
-\[f(n) \text{ is } \Theta(g(n)) \] 
+$$f(n) \text{ is } \Theta(g(n)) $$ 
 And 
-\[f(n) \geq c' g(n) \]
-\[f(n) \leq c'' g(n) \]
-\[\text{ for all } n \geq n_{0} \]
+$$f(n) \geq c' g(n) $$
+$$f(n) \leq c'' g(n) $$
+$$\text{ for all } n \geq n_{0} $$
 
 ## The 7 deadly functions
 Here is the list of the most important functions you must take in consideration while talking about big O. Also draw these so you are fully understand them. This list go from best to worse.
