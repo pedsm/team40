@@ -3,7 +3,7 @@
 Jonny if you are reading this I am sorry but your notes are garbage so I am starting new ones.
 
 # Algorithms basics
-## Lecture 1 - Get ready to RUMBLE!!
+## Get ready to RUMBLE!!
 
 ![Mad algorithms](https://media.giphy.com/media/3o6Yg4GUVgIUg3bf7W/giphy.gif?response_id=59205e40e56f576c41a930ab)
 
@@ -50,7 +50,7 @@ A high level representation of an algorithm in a syntax free language('Basically
 >I bet you 1 quid it is not coming in the exam 
 
 
-## Lecture 2 the BIG O
+## Big O and friends
 
 ![Lol what is this](https://media.giphy.com/media/LgB2sFodXQbAI/giphy.gif?response_id=59206612d0094723df4ed2da)
 
