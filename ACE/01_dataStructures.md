@@ -117,4 +117,15 @@ Another big advantage is the ability to limit the size of the queue and apply a 
 
 >Fun fact use linked lists and booom mad efficiency bruf.
 
+# Vector ADT
+
+It is a dynamic array.
+
+A vector stores the size of the array as well as an array. Storing the size will allow us to relloc memory this way allowing us to resize the array. However the resize operation is costly and should be taken in consideration when and how often it is going to be done. Resizing has complexity of $O(n)$. However space complexity also should be taken in consideration.
+
+# Heap
+
+A heap is an implementation of priority queues represented by a binary tree. Storing key value pairs. Maintaining order on a tree like structure, such as in a linked list, works fairly well. Shifting is never necessary as it is done as a side effect of changing a reference pointer properly. This means that a heap can easily maintain a nice structure with some sort of order. Therefore maintaining a sorted heap can be more efficient than a simple priority queue.
+
+
 # Trees
