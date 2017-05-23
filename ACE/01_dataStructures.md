@@ -35,7 +35,7 @@ The whole reason we have abstract data structures is so we can theorise about ve
 
 ## And here is a bunch of examples you probably need to know 
 
-### Stack ADT
+# Stack ADT
 
 A stack is and ADT that stores references to objects(Pointers),
 insertions and deletions work as LIFO(last in first out). Imagine it as a pile of documents on a stack. The last document put on the stack will be the first one you will read.
@@ -50,6 +50,7 @@ Object pop(){
 }
 ```
 **Auxiliary methods also consist in**
+
 | Method | Description     |
 | :------------- | :------------- |
 | top()       | returns last inserted element |
@@ -73,4 +74,47 @@ public interface Stack {
 1. Browser History
 2. Undo commands
 3. Chain of method calls for VMS(JVM)
-##
+
+# Queue ADT
+
+The queue ADT is very similar to the stack, however we have a FIFO(first in first out system) for the removal of elements.
+
+**Methods**
+
+```Java
+Object enqueue(Object obj){
+    //Inserts element
+}
+Object dequeue(){
+    //Removes and returns the oldest object
+}
+```
+
+**Auxiliary methods also consist in**
+
+| Method | Description     |
+| :------------- | :------------- |
+| front()       | returns oldest element |
+| size()      | returns size of the queue   |
+| isEmpty()   | returns bool true if queue is empty   |
+
+### Implementation
+```Java
+public interface Queue {
+	public int size();
+	public boolean isEmpty();
+	public Object front() throws EmptyQueueException;
+	public void enqueue(Object o);
+	public Object dequeue() throws EmptyQueueException;
+}
+```
+
+## Why use a queue?
+
+A queue offers advantages when it comes to performance and abstraction, queue operations can be optimised in different ways. For example instead of adding the shifting elements to the front of the array when one element is removed we can remove that object, and keep the back of the array just shifting the *front()* pointer for example. This allows dequeueing to become $O(1)$ instead $O(n)$
+
+Another big advantage is the ability to limit the size of the queue and apply a round robin approach to maximise the efficiency of operations while keeping the same size of the container class.
+
+>Fun fact use linked lists and booom mad efficiency bruf.
+
+# Trees

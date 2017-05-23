@@ -55,7 +55,7 @@ A high level representation of an algorithm in a syntax free language('Basically
 
 ![Lol what is this](https://media.giphy.com/media/LgB2sFodXQbAI/giphy.gif?response_id=59206612d0094723df4ed2da)
 
-Alrith get ready for like 20% of this course *spoiler alert* the other 80% is [trees](https://reddit.com/r/trees)
+Alright get ready for like 20% of this course *spoiler alert* the other 80% is [trees](https://reddit.com/r/trees)
 
 Big O notation is a way of representing how the *average* runtime of an algorithm changes in relation to the input size. **Boom** this should guarantee you 10% of the exam. 
 
@@ -97,6 +97,7 @@ $$\text{ for all } n \geq n_{0} $$
 
 ## The 7 deadly functions
 Here is the list of the most important functions you must take in consideration while talking about big O. Also draw these so you are fully understand them. This list go from best to worse.
+
 ![Mad exponential growth](https://media.giphy.com/media/3oKIPpFhwsMNrRIjN6/giphy.gif)
 
 1. Constant      = 1
