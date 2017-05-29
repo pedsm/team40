@@ -1,4 +1,4 @@
-# Advanced Functional Programming 
+# Advanced Functional Programming
 
 ## Lecture 1 Sudoku
 
@@ -15,7 +15,7 @@ type Grid     = [[Char]]
 ```
 On the basic definitions we want to define all our types as we will be working with functions that will be taken those types as parameters.
 
-### Basic definitions 
+### Basic definitions
 This can be seen as the init functions.
 
 ```Haskell
@@ -28,19 +28,19 @@ values = [1..9]
 empty :: Value -> Bool
 empty = (== '.')
 
-single :: [a] -> Bool 
+single :: [a] -> Bool
 single [_] = True
 single  _  = Flase
 ```
 
-#### Making a empty grid with sexy functions 
+#### Making a empty grid with sexy functions
 ```Haskell
 blank :: Grid
 blank = replicate n(replicate n '.')
        where n = boxsize ^ 2
 -- This makes an array of arrays based on box size square
 ```
-#### Validator function 
+#### Validator function
 ```Haskell
 valid :: Grid -> Bool
 valid g = all nodeups (rows g) &&
@@ -65,7 +65,7 @@ nodeups (x:xs) = not (elem x xs) && nodeups xs
 ```
 ## Lecture 2 More Sudoku
 
-### Function composition not that hard so learn it and use it 
+### Function composition not that hard so learn it and use it
 The dot(.) notation can be use to easily pass a function as a parameter of another function and create chained functions
 
 ```Haskell
@@ -89,7 +89,7 @@ choices g = map(map choice) g
           [v]
 ```
 
-### The solver definitions 
+### The solver definitions
 These are the functions that actually solve the puzzle
 
 ```Haskell
@@ -115,8 +115,8 @@ lazySolver  = filter valid . collapse . prune . choice
 prune :: Matrix Choices -> Matrix Choices
 prune  = pryneBy boxs . prubeBy cols . pruneBy roows
         where pruneBy f = f . map reduce . f
-        --niiiiice code right there 
-        
+        --niiiiice code right there
+
 --removes the obivious cases(in case brute force worked)
 recude :: Row Choices -> Row Choices
 recude xss = [xs 'minux' singles | xs <- xss]
@@ -356,3 +356,35 @@ instance Monad ST where
   --Wut?
   st >>= f = S (\s -> let (x,s') = app st s in app (f x) s')
 ```
+
+# Resoning about programs
+
+Here are some examples of functions.
+
+
+## Replace
+
+```Haskell
+-- replaces all 0's on a list with an increasing value.
+replace [] n     = ([],n)
+replace (x:xs) n = if x == 0 then
+                      let (xs',n') = replace xs (n+1) in (n:xs',n)
+                    else
+                      let (xs',n') = replace xs n     in (x:xs',n')
+-- This version is problematic as we are handling the new fresh values ourselves and that can be error prone.
+-- Monadic version
+replace' [] = return []
+replace' (x:xs) = if x == 0 then
+                    do x' <- fresh
+                       xs'<- replace' xs
+                       return(x':xs')
+                  else
+                    do xs' <- replace' xs
+                       return (x:xs')
+
+-- relabel applies replace xs 1
+relabel   :: [Int] -> [Int]
+relabel xs = replace xs 1
+```
+
+
