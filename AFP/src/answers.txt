@@ -1,0 +1,259 @@
+----------------------------------------------------------------------
+
+Module:		G52AFP Advanced Functional Programming
+School:		Computer Science, University of Nottingham
+Lecturer:	Prof Graham Hutton
+Level:		2
+Semester:	Spring
+Year:		14-15
+
+----------------------------------------------------------------------
+
+QUESTION 1:
+
+a) class Monad m where
+      return :: a -> m a
+      (>>=)  :: m a -> (a -> m b) -> m b
+
+   That is, a monad is a parameterised type "m" that supports
+   return and >>= functions of the specified types.
+
+b) instance Monad Maybe where
+      return         :: a -> Maybe a
+      return x        = Just x
+ 
+      (>>=)          :: Maybe a -> (a -> Maybe b) -> Maybe b
+      Nothing  >>= f  = Nothing
+      (Just x) >>= f  = f x
+
+c) eval (Val n)   = if n == 0 then Nothing else return n
+   eval (Div x y) = eval x >>= (\n -> eval y >>= (\m -> return (n+m))
+
+   This definition is preferable because the management of
+   failure is now handled automatically by the monad machinery,
+   rather than having to explicitly programmed.
+
+d) Properties:
+
+      return x >>= f     =   f x
+
+      mx >>= return      =   mx
+
+      (mx >>= f) >>= g   =   mx >>= (\x -> (f x >>= g))
+
+   Proofs:
+
+     return x >>= f
+   =    applying return
+     Just x >>= f
+   =    applying >>=
+     f x
+
+   Proof:
+
+     mx >>= return
+   =   applying >>=
+     case mx of
+        Nothing -> Nothing
+        Just x  -> return x
+   =    applying return
+     case mx of
+        Nothing -> Nothing
+        Just x  -> Just x
+   = simplification
+        mx
+
+e) Some possible answers:
+
+   They can be used to prove properties that hold for arbitrary
+   monads (e.g. liftM preserves function composition)
+
+   They can be used to optimise monadic programs (e.g. the two
+   identity laws provide simple optimisation rules)
+
+   They underpin the use of the do notation (e.g. the fact that
+   we have a sequence of actions relies on associativity)
+
+f) instance Monad Term where
+      return         :: a -> Term a
+      return x        = Var x
+
+      (>>=)          :: Term a -> (a -> Term b) -> Term b
+      (Val n) >>= f   = Val n
+      (Val v) >>= f   = f v
+      (Add x y) >>= f = Add (x >>= f) (y >>= f)
+
+   The >>= function for the Term monad implements the process
+   of substitution, i.e. replacing variables by terms.
+
+----------------------------------------------------------------------
+
+QUESTION 2:
+
+a) return x = \s -> (x,s)
+
+   st >>= f = \s -> let (x,s') = st s in f x s'
+
+   That is, return converts a value into a state transformer that
+   simply returns that value without modifying the state.
+
+   That is, >>= provides a means of sequencing state transformers:
+   st >>= f applies the state transformer st to an initial state s,
+   then applies the function f to the resulting value x to give a
+   second state transformer (f x), which is then applied to the
+   modified state s' to give the final result value.
+
+b) replace []	  n  = ([],n)
+   replace (x:xs) n  = if x == 0 then
+                           let (xs',n') = replace xs (n+1) in (n:xs',n')
+		       else
+                           let (xs',n') = replace xs n in (x:xs',n')
+
+c) We have to explicitly deal with the plumbing of fresh values,
+which is tedious, error prone, and makes the definition more
+complicated than it should be for such a simple task.
+
+d) fresh = \s -> (s, s+1)
+
+e) replace       :: [Int] -> ST [Int]
+   replace []     = return []
+   replace (x:xs) = if x == 0 then
+                       do x'  <- fresh
+                          xs' <- replace xs
+                          return (x':xs')
+                    else
+                       do xs' <- replace xs
+                          return (x:xs')
+
+f) relabel ns = fst (replace ns 1)
+
+----------------------------------------------------------------------
+
+QUESTION 3:
+
+a) P (Zero)   forall n. P (n) => P (Succ n)
+   -----------------------------------------
+                forall n. P (n)
+
+   That is, if we want to prove that some property P holds for
+   all natural numbers, it is sufficient to show that P holds for
+   Zero (the base case), and that P is preserved by Succ (the
+   inductive case).  More precisely, in the inductive case one is
+   required to show that if P holds for any natural number (the
+   induction hypothesis), it also holds for its successor.
+
+b) Base case:
+
+     add Zero Zero 
+   =   applying add
+     Zero
+
+   Inductive case:
+
+     add (Succ x) Zero
+   =   applying add
+     Succ (add x Zero)
+   =   induction hypothesis
+     Succ x
+
+   Base case:
+
+     add Zero (add y z)
+   =   applying the outer add
+     add y z
+   =   unapplying add
+      add (add Zero y) z
+
+   Inductive case:
+
+     add (Succ x) (add y z)
+   =   applying the outer add
+     Succ (add x (add y z))
+   =   induction hypothesis
+     Succ (add (add x y) z)
+   =   unapplying the outer add
+     add (Succ (add x y) z)
+   =   unapplying the inner add
+     add (add (Succ x) y) z)
+
+c) product [2,3,4]
+   = 2 * product [3,4]
+   = 2 * (3 * product [4])
+   = 2 * (3 * (4 * product []))
+   = 2 * (3 * (4 * 1))
+   = 2 * (3 * 4)
+   = 2 * 12
+   = 24
+
+   None of the additions can be performed until the end of the 
+   list is reached, and hence evaluation takes linear space.
+
+d)   product' [] n
+   =   specification
+     n * product []
+   =   applying product
+     n * 1
+   =   arithmetic
+     n
+
+     product' (x:xs) n
+   =   specification
+     n * product (x:xs)
+   =   applying product
+     n * (x * product xs)
+   =   arithmetic
+     (n * x) * product xs
+   =   induction hypothesis
+     product' xs (n * x)
+
+   Hence, we have calculated the following definition:
+
+     product' []     n = n
+     product' (x:xs) n = product' xs (n*x)
+
+e) product [2,3,4]
+   = product' [2,3,4] 1
+   = product' [3,4] (1*2)
+   = product' [3,4] 2
+   = product' [4] (2*3)
+   = product' [4] 6
+   = product' [] (6*4)
+   = product' [] 24
+   = 24
+   
+   (Other evaluation sequences are possible too.)
+   
+   The multiplications can now be performed incrementally as the
+   list is consumed, resulting in constant space usage.
+
+----------------------------------------------------------------------
+
+QUESTION 4:
+
+a) eval (Val n)	      = n
+   eval (App Add x y) = eval x + eval y
+   eval (App Mul x y) = eval x * eval y
+
+   values (Val n)     = [n]
+   values (App o x y) = values x ++ values y
+
+b) delete x []		       = []
+   delete x (y:ys) | x == y    = ys
+                   | otherwise = y : delete x ys
+
+c) perms [] = [[]]
+   perms xs = [x:ys | x <- xs, ys <- perms (delete x xs)]
+
+d) split xs = [(take n xs, drop n xs) | n <- [1..m]]
+              where m = length xs - 1
+
+e) exprs []  =	[]
+   exprs [n] =	[Val n]
+   exprs ns  =	[App o l r | (ls,rs) <- split ns
+                           , l	     <- exprs ls
+                           , r	     <- exprs rs
+                           , o	     <- [Add,Mul]]
+
+f) solve ns n  =  [e | ns' <- perms ns, e <- exprs ns, eval e == n]
+
+----------------------------------------------------------------------

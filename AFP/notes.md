@@ -177,3 +177,182 @@ eval(Div x y) = do n <- eval x
                    m <- eval y
                    safediv n m
 ```
+
+# Exam revision 
+
+## Defining a Monad
+
+A monad is a parameterised type that supports the return and >>= *bind* functionsit can be defined as follows
+
+```Haskell
+class Monad m where
+  return :: a -> m a
+  (>>=)  :: m a -> (a -> mb) -> m b
+```
+
+### Example of the Maybe monad
+
+```Haskell
+instance Monad Maybe where
+  return  :: a -> Maybe a
+  return x = Just x
+
+  (>>=) ::  Maybe a -> (a -> Maybe b) -> Maybe b
+  Nothing >>= f  = Nothing
+  (Just x) >>= f = f x
+```
+
+## The bind function
+
+The bind function allows us to apply functions to our monadic values in such a way that allows us to skip exception handling as all will be handled by the recursive binding itself. One major example of this is the following.
+
+Assume we have the following code for a simple evaluator.
+
+```Haskell
+data Expr = Val Int | Add Expr Expr
+
+eval           :: Expr -> Maybe Int
+eval (Val n)    = if n == 0 then nothing else Just n
+eval (Add x y)  = case eval x of
+                    Nothing -> Nothing
+                    Just n  -> case eval y of
+                      Nothing -> Nothing
+                      Juxt m  -> Just (n+m)
+```
+
+As you can see this code will handle expceptions. However it is quite complicated and long. This makes it error prone as well as hard to read and therefore maintain. To improve this we can use the bind operator to abstract our error handling.
+
+```Haskell
+data Expr = Val Int | Add Expr Expr
+
+eval           :: Expr -> Maybe Int
+eval (Val n)    = if n == 0 then nothing else Just n
+eval (Add x y)  = eval x >>= (\n ->
+                  eval y >>= (\m ->
+                  return n + m))
+```
+
+This code is already much shorter and will handle the same expceptions with no problems. However we can take this a step further by using the <- which simply takes the bind operator and puts it in a much nicer syntax.
+
+```Haskell
+data Expr = Val Int | Add Expr Expr
+
+eval           :: Expr -> Maybe Int
+eval (Val n)    = if n == 0 then nothing else Just n
+-- Pay attention to the do block
+eval (Add x y)  = do
+                    n <- eval x
+                    m <- eval y
+                    return (x+y)
+
+```
+
+## Monadic laws
+
+All Monads apart from having the two basic functions *return* and *(>>=)* also must follow 3 simple rules. These are the following.
+
+1. Left Identity `return a >>= f = f a`
+2. Right Identity `m a >>= return = m a`
+3. Associativity `(m >>= f) >>= g = m >>= (\x -> f x >>= g)`
+
+## Proof
+
+He is the inductive proof for these laws all based on the Maybe Monad.
+
+1. Left Identity
+
+```Haskell
+P(Maybe a)
+return Maybe a >>= f
+= {applying return}
+Just a >>= f
+= {applying bind}
+f a
+```
+
+2. Right Identity
+
+```Haskell
+P(Nothing)
+Nothing >>= return
+={Applying bind}
+return Nothing
+={Applying return}
+Nothing
+
+Just x >>= return
+={Applying bind}
+return Just x
+={Applying return}
+Just x
+```
+
+3. Associativity
+
+```Haskell
+P(Nothing)
+(Nothing >>= f) >>= g
+={Applying bind}
+Nothing >>= g
+={Applying bind}
+Nothing
+={Unapplying bind}
+Nothing >>= (\x -> f x)
+={Unapplying bind}
+Nothing >>= (\x -> f x >>= g)
+
+P(Just x)
+(Just x >>= f) >>= g
+={Applying bind}
+f x >>= g
+={Applying bind}
+f . g x
+={Unapplying bind}
+Just x >>= (\x -> f x)
+={Unapplying bind}
+Just x >>= (\x -> f x >>= g)
+```
+
+### Why Monad laws?
+
+Monad laws allow for a couple of benefits, they can be use to prove propreties in monads. They can also be sued to optimise monadic rules. They also underpi the use of the do notation, which allows for more concise programs which take full advantage of functions such as bind(>>=).
+
+## Term monad example
+
+Here is an exmaple of a monad defined through terms in a mathematical equation.
+
+```Haskell
+-- Given the following
+data Term a = Val int | Var a | Add (Term a) (Term a)
+
+instance Monad Term where
+  return  :: a -> Term a
+  return a = Var a
+
+  (>>=)         :: Term -> a -> (a -> Term b) -> Term b
+  (Val n) >>= f   = f n
+  --This is infered
+  (Var n) >>= f   = Val n
+  (Add x y) >>= f = Add (x>>=f) (y>>=f)
+```
+
+## The state Monad
+
+If we have a  type as follows
+
+```Haskell
+type State = Int
+--newtype is used with the S dummy constructor as for Monad implementation
+newtype ST a = S (State -> (a,State))
+```
+
+We can define this as a Monad. Firstival we need to declare the default moandic functions.
+
+```Haskell
+instance Monad ST where
+  return   :: a -> (State->(a, State))
+  return x = S (\s -> (x,s))
+  (>>=)    :: ST a -> (a -> ST b) -> ST b
+  --Wut?
+  st >>= f = S (\s -> let (x,s') = app st s in app (f x) s')
+```

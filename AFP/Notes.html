@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../assets/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="advanced-functional-programming">Advanced Functional Programming</h1>
+<h2 id="lecture-1-sudoku">Lecture 1 Sudoku</h2>
+<h3 id="basic-type-declarations">Basic type declarations</h3>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">type</span> <span class="dt">Grid</span>     <span class="fu">=</span> <span class="dt">Matrix</span> <span class="dt">Value</span>
+<span class="kw">type</span> <span class="dt">Matrix</span> a <span class="fu">=</span> [<span class="dt">Row</span> a]
+<span class="kw">type</span> <span class="dt">Row</span> a    <span class="fu">=</span> [a]
+<span class="kw">type</span> <span class="dt">Value</span>    <span class="fu">=</span> <span class="dt">Char</span>
+
+<span class="co">-- Alternatively Grid could be defined as(Not optimal verbose is life)</span>
+<span class="kw">type</span> <span class="dt">Grid</span>     <span class="fu">=</span> [[<span class="dt">Char</span>]]</code></pre></div>
+<p>On the basic definitions we want to define all our types as we will be working with functions that will be taken those types as parameters.</p>
+<h3 id="basic-definitions">Basic definitions</h3>
+<p>This can be seen as the init functions.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">boxsize ::</span> <span class="dt">Int</span>
+boxsize <span class="fu">=</span> <span class="dv">3</span>
+
+<span class="ot">values ::</span> [<span class="dt">Value</span>]
+values <span class="fu">=</span> [<span class="dv">1</span><span class="fu">..</span><span class="dv">9</span>]
+
+<span class="ot">empty ::</span> <span class="dt">Value</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+empty <span class="fu">=</span> (<span class="fu">==</span> <span class="ch">&#39;.&#39;</span>)
+
+<span class="ot">single ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Bool</span> 
+single [_] <span class="fu">=</span> <span class="dt">True</span>
+single  _  <span class="fu">=</span> <span class="dt">Flase</span></code></pre></div>
+<h4 id="making-a-empty-grid-with-sexy-functions">Making a empty grid with sexy functions</h4>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">blank ::</span> <span class="dt">Grid</span>
+blank <span class="fu">=</span> replicate n(replicate n <span class="ch">&#39;.&#39;</span>)
+       <span class="kw">where</span> n <span class="fu">=</span> boxsize <span class="fu">^</span> <span class="dv">2</span>
+<span class="co">-- This makes an array of arrays based on box size square</span></code></pre></div>
+<h4 id="validator-function">Validator function</h4>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">valid ::</span> <span class="dt">Grid</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+valid g <span class="fu">=</span> all nodeups (rows g) <span class="fu">&amp;&amp;</span>
+         all nodeups (cols g) <span class="fu">&amp;&amp;</span>
+         all nodeups (boxs g)
+<span class="co">-- rows, cols and boxs check if one square is valid in a row a column and a box respectively</span>
+rows, cols,<span class="ot"> boxs ::</span> <span class="dt">Matrix</span> a <span class="ot">-&gt;</span> [<span class="dt">Row</span> a]
+rows <span class="fu">=</span> id
+cols <span class="fu">=</span> tranpose
+boxs <span class="fu">=</span> unpack <span class="fu">.</span> map cols <span class="fu">.</span> pack
+       <span class="kw">where</span>
+         pack   <span class="fu">=</span> split <span class="fu">.</span> map split
+         split  <span class="fu">=</span> chop boxsize
+         unpack <span class="fu">=</span> map concat <span class="fu">.</span> concat
+<span class="ot">chop ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [[a]]
+chop n [] <span class="fu">=</span> []
+chop n xs <span class="fu">=</span> take n xs <span class="fu">:</span> chop n (drop n xs)
+
+<span class="ot">nodeups ::</span> <span class="dt">Eq</span> a <span class="ot">=&gt;</span> [a] <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+nodeups []     <span class="fu">=</span> <span class="dt">True</span>
+nodeups (x<span class="fu">:</span>xs) <span class="fu">=</span> not (elem x xs) <span class="fu">&amp;&amp;</span> nodeups xs</code></pre></div>
+<h2 id="lecture-2-more-sudoku">Lecture 2 More Sudoku</h2>
+<h3 id="function-composition-not-that-hard-so-learn-it-and-use-it">Function composition not that hard so learn it and use it</h3>
+<p>The dot(.) notation can be use to easily pass a function as a parameter of another function and create chained functions</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">solve ::</span> <span class="dt">Grid</span> <span class="ot">-&gt;</span> [<span class="dt">Grid</span>]
+solve  <span class="fu">=</span> filter valid <span class="fu">.</span> collapse <span class="fu">.</span> choices
+<span class="co">-- Both do the same but the first version is sexier arguments can be hidden because curry stuff</span>
+solve g <span class="fu">=</span> filter valid(collapse(choices g))</code></pre></div>
+<h3 id="choices-function">Choices function</h3>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">-- This uses the parametric type of Matrix to allow it to take not only a single value but also a list of values</span>
+<span class="kw">type</span> <span class="dt">Choices</span> <span class="fu">=</span> [<span class="dt">Value</span>]
+<span class="ot">choices ::</span> <span class="dt">Grid</span> <span class="ot">-&gt;</span> <span class="dt">Matrix</span> <span class="dt">Choices</span>
+choices g <span class="fu">=</span> map(map choice) g
+  <span class="kw">where</span> 
+    choice v <span class="fu">=</span> 
+      <span class="kw">if</span> v <span class="fu">==</span> <span class="ch">&#39;.&#39;</span> <span class="kw">then</span>
+        [<span class="dv">1</span><span class="fu">..</span><span class="dv">9</span>]
+      <span class="kw">else</span>
+          [v]</code></pre></div>
+<h3 id="the-solver-definitions">The solver definitions</h3>
+<p>These are the functions that actually solve the puzzle</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">-- Cartesian product</span>
+<span class="ot">cp ::</span> [[a]] <span class="ot">-&gt;</span> [[a]]
+cp []       <span class="fu">=</span> [[]]
+cp (xs<span class="fu">:</span>xss) <span class="fu">=</span> [y<span class="fu">:</span>ys <span class="fu">|</span> y <span class="ot">&lt;-</span> xs, ys <span class="ot">&lt;-</span> cp xss]
+<span class="co">-- Optimization(lazy brute forcing)</span>
+<span class="ot">collapse ::</span> <span class="dt">Matrix</span>[a] <span class="ot">-&gt;</span> [<span class="dt">Matrix</span> a]
+collapse  <span class="fu">=</span> cp <span class="fu">.</span> map cp
+<span class="co">-- This is the same as</span>
+<span class="co">-- collapse g = cp(map cp g)</span>
+<span class="co">-- Apply cp to all inputs and then apply cp to the final result</span></code></pre></div>
+<h3 id="optimizations">Optimizations</h3>
+<p>These optimizations will drastically improve the brute force algorithm by adding lazy evaluation(based on pre existing numbers on the grid)</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">lazySolver ::</span> <span class="dt">Grid</span> <span class="ot">-&gt;</span> [<span class="dt">Grid</span>]
+lazySolver  <span class="fu">=</span> filter valid <span class="fu">.</span> collapse <span class="fu">.</span> prune <span class="fu">.</span> choice
+<span class="co">--Still slow af fam</span>
+<span class="ot">prune ::</span> <span class="dt">Matrix</span> <span class="dt">Choices</span> <span class="ot">-&gt;</span> <span class="dt">Matrix</span> <span class="dt">Choices</span>
+prune  <span class="fu">=</span> pryneBy boxs <span class="fu">.</span> prubeBy cols <span class="fu">.</span> pruneBy roows
+        <span class="kw">where</span> pruneBy f <span class="fu">=</span> f <span class="fu">.</span> map reduce <span class="fu">.</span> f
+        <span class="co">--niiiiice code right there </span>
+        
+<span class="co">--removes the obivious cases(in case brute force worked)</span>
+<span class="ot">recude ::</span> <span class="dt">Row</span> <span class="dt">Choices</span> <span class="ot">-&gt;</span> <span class="dt">Row</span> <span class="dt">Choices</span>
+recude xss <span class="fu">=</span> [xs <span class="ch">&#39;minux&#39;</span> singles <span class="fu">|</span> xs <span class="ot">&lt;-</span> xss]
+            <span class="kw">where</span> singles <span class="fu">=</span> concat (filter single xss)
+<span class="ot">minus ::</span> <span class="dt">Choices</span> <span class="ot">-&gt;</span> <span class="dt">Choices</span> <span class="ot">-&gt;</span> <span class="dt">Choices</span>
+xs <span class="ch">&#39;minus&#39;</span> ys  <span class="fu">=</span> <span class="kw">if</span> single xs <span class="kw">then</span> xs <span class="kw">else</span> xs \\ ys
+<span class="co">-- look at that next level pattern matching</span>
+
+<span class="co">-- Super lazy solver</span>
+<span class="ot">llSolver ::</span> <span class="dt">Grid</span> <span class="ot">-&gt;</span> [<span class="dt">Grid</span>]
+llSolver  <span class="fu">=</span> filter valid <span class="fu">.</span> collapse <span class="fu">.</span> fix <span class="fu">.</span> prune <span class="fu">.</span> choice</code></pre></div>
+<h2 id="cw1---game-a.i.">Cw1 - Game A.I.</h2>
+<h3 id="game-trees">Game trees:</h3>
+<p>To use a game tree you will need to define a maximum depth, and expand every single possible outcome.</p>
+<ol style="list-style-type: decimal">
+<li>Produce the game trees</li>
+<li>Label each leaf with the winner or with B if the game is a draw</li>
+<li>Work up the grid(By copying the child's classification to their parents)</li>
+<li>Decide which is the best possible next step</li>
+</ol>
+<h3 id="checking">Checking</h3>
+<p>While checking for winners make one check row function and reapply that to matrix operations of the same board.</p>
+<h1 id="a-simple-evaluator">A simple evaluator</h1>
+<p>This is a simple evaluator which evaluates expressions with a division operator. This is done recursively and uses the Maybe monad to achieve error checking(for division on 0)</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">--Simple div evaluator</span>
+<span class="kw">data</span> <span class="dt">Expr</span> <span class="fu">=</span> <span class="dt">Val</span> <span class="dt">Int</span> <span class="fu">|</span> <span class="dt">Div</span> <span class="dt">Expr</span> <span class="dt">Expr</span>
+
+<span class="ot">eval ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+eval(<span class="dt">Val</span> n) <span class="fu">=</span> <span class="dt">Just</span> n
+eval(<span class="dt">Div</span> x y) <span class="fu">=</span> 
+  <span class="kw">case</span> eval n <span class="kw">of</span>
+    <span class="dt">Nothing</span> <span class="ot">-&gt;</span> <span class="dt">Nothing</span>
+    <span class="dt">Just</span> n <span class="ot">-&gt;</span> <span class="kw">case</span> eval y <span class="kw">of</span>
+      <span class="dt">Nothing</span> <span class="ot">-&gt;</span> <span class="dt">Nothing</span>
+      <span class="dt">Just</span> m <span class="ot">-&gt;</span> safediv n m
+
+<span class="ot">safediv ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+safediv _ <span class="dv">0</span> <span class="fu">=</span> <span class="dt">Nothing</span>
+safediv n m <span class="fu">=</span> <span class="dt">Just</span>(x <span class="ch">&#39;Div&#39;</span> y)
+
+<span class="co">--More error checking with fancy stuff</span>
+<span class="co">--I will call this fancy error propagating monad(aka bind), this evaluates Maybe types and only follows with it in the case of a successful result</span>
+<span class="co">--(&gt;&gt;=)</span>
+eval(<span class="dt">Val</span> n) <span class="fu">=</span> <span class="dt">Just</span> n
+eval(<span class="dt">Div</span> x y) <span class="fu">=</span> eval x <span class="fu">&gt;&gt;=</span> (\n)
+                eval y <span class="fu">&gt;&gt;=</span> (\m)
+<span class="co">-- Now the op thing is that is applied automatically to do notation. Now watch this</span>
+<span class="ot">eval ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+eval(<span class="dt">Val</span> n) <span class="fu">=</span> <span class="dt">Just</span> n
+eval(<span class="dt">Div</span> x y) <span class="fu">=</span> <span class="kw">do</span> n <span class="ot">&lt;-</span> eval x 
+                   m <span class="ot">&lt;-</span> eval y
+                   safediv n m</code></pre></div>
+<h1 id="exam-revision">Exam revision</h1>
+<h2 id="defining-a-monad">Defining a Monad</h2>
+<p>A monad is a parameterised type that supports the return and &gt;&gt;= <em>bind</em> functionsit can be defined as follows</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span> <span class="dt">Monad</span> m <span class="kw">where</span>
+<span class="ot">  return ::</span> a <span class="ot">-&gt;</span> m a
+<span class="ot">  (&gt;&gt;=)  ::</span> m a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> mb) <span class="ot">-&gt;</span> m b</code></pre></div>
+<h3 id="example-of-the-maybe-monad">Example of the Maybe monad</h3>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Monad</span> <span class="dt">Maybe</span> <span class="kw">where</span>
+<span class="ot">  return  ::</span> a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> a
+  return x <span class="fu">=</span> <span class="dt">Just</span> x
+
+<span class="ot">  (&gt;&gt;=) ::</span>  <span class="dt">Maybe</span> a <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b) <span class="ot">-&gt;</span> <span class="dt">Maybe</span> b
+  <span class="dt">Nothing</span> <span class="fu">&gt;&gt;=</span> f  <span class="fu">=</span> <span class="dt">Nothing</span>
+  (<span class="dt">Just</span> x) <span class="fu">&gt;&gt;=</span> f <span class="fu">=</span> f x</code></pre></div>
+<h2 id="the-bind-function">The bind function</h2>
+<p>The bind function allows us to apply functions to our monadic values in such a way that allows us to skip exception handling as all will be handled by the recursive binding itself. One major example of this is the following.</p>
+<p>Assume we have the following code for a simple evaluator.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Expr</span> <span class="fu">=</span> <span class="dt">Val</span> <span class="dt">Int</span> <span class="fu">|</span> <span class="dt">Add</span> <span class="dt">Expr</span> <span class="dt">Expr</span>
+
+<span class="ot">eval           ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+eval (<span class="dt">Val</span> n)    <span class="fu">=</span> <span class="kw">if</span> n <span class="fu">==</span> <span class="dv">0</span> <span class="kw">then</span> nothing <span class="kw">else</span> <span class="dt">Just</span> n
+eval (<span class="dt">Add</span> x y)  <span class="fu">=</span> <span class="kw">case</span> eval x <span class="kw">of</span>
+                    <span class="dt">Nothing</span> <span class="ot">-&gt;</span> <span class="dt">Nothing</span>
+                    <span class="dt">Just</span> n  <span class="ot">-&gt;</span> <span class="kw">case</span> eval y <span class="kw">of</span>
+                      <span class="dt">Nothing</span> <span class="ot">-&gt;</span> <span class="dt">Nothing</span>
+                      <span class="dt">Juxt</span> m  <span class="ot">-&gt;</span> <span class="dt">Just</span> (n<span class="fu">+</span>m)</code></pre></div>
+<p>As you can see this code will handle expceptions. However it is quite complicated and long. This makes it error prone as well as hard to read and therefore maintain. To improve this we can use the bind operator to abstract our error handling.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Expr</span> <span class="fu">=</span> <span class="dt">Val</span> <span class="dt">Int</span> <span class="fu">|</span> <span class="dt">Add</span> <span class="dt">Expr</span> <span class="dt">Expr</span>
+
+<span class="ot">eval           ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+eval (<span class="dt">Val</span> n)    <span class="fu">=</span> <span class="kw">if</span> n <span class="fu">==</span> <span class="dv">0</span> <span class="kw">then</span> nothing <span class="kw">else</span> <span class="dt">Just</span> n
+eval (<span class="dt">Add</span> x y)  <span class="fu">=</span> eval x <span class="fu">&gt;&gt;=</span> (\n <span class="ot">-&gt;</span>
+                  eval y <span class="fu">&gt;&gt;=</span> (\m <span class="ot">-&gt;</span>
+                  return n <span class="fu">+</span> m))</code></pre></div>
+<p>This code is already much shorter and will handle the same expceptions with no problems. However we can take this a step further by using the &lt;- which simply takes the bind operator and puts it in a much nicer syntax.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Expr</span> <span class="fu">=</span> <span class="dt">Val</span> <span class="dt">Int</span> <span class="fu">|</span> <span class="dt">Add</span> <span class="dt">Expr</span> <span class="dt">Expr</span>
+
+<span class="ot">eval           ::</span> <span class="dt">Expr</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+eval (<span class="dt">Val</span> n)    <span class="fu">=</span> <span class="kw">if</span> n <span class="fu">==</span> <span class="dv">0</span> <span class="kw">then</span> nothing <span class="kw">else</span> <span class="dt">Just</span> n
+<span class="co">-- Pay attention to the do block</span>
+eval (<span class="dt">Add</span> x y)  <span class="fu">=</span> <span class="kw">do</span>
+                    n <span class="ot">&lt;-</span> eval x
+                    m <span class="ot">&lt;-</span> eval y
+                    return (x<span class="fu">+</span>y)</code></pre></div>
+<h2 id="monadic-laws">Monadic laws</h2>
+<p>All Monads apart from having the two basic functions <em>return</em> and <em>(&gt;&gt;=)</em> also must follow 3 simple rules. These are the following.</p>
+<ol style="list-style-type: decimal">
+<li>Left Identity <code>return a &gt;&gt;= f = f a</code></li>
+<li>Right Identity <code>m a &gt;&gt;= return = m a</code></li>
+<li>Associativity <code>(m &gt;&gt;= f) &gt;&gt;= g = m &gt;&gt;= (\x -&gt; f x &gt;&gt;= g)</code></li>
+</ol>
+<h2 id="proof">Proof</h2>
+<p>He is the inductive proof for these laws all based on the Maybe Monad.</p>
+<ol style="list-style-type: decimal">
+<li>Left Identity</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="dt">P</span>(<span class="dt">Maybe</span> a)
+return <span class="dt">Maybe</span> a <span class="fu">&gt;&gt;=</span> f
+<span class="fu">=</span> {applying return}
+<span class="dt">Just</span> a <span class="fu">&gt;&gt;=</span> f
+<span class="fu">=</span> {applying bind}
+f a</code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Right Identity</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="dt">P</span>(<span class="dt">Nothing</span>)
+<span class="dt">Nothing</span> <span class="fu">&gt;&gt;=</span> return
+<span class="fu">=</span>{<span class="dt">Applying</span> bind}
+return <span class="dt">Nothing</span>
+<span class="fu">=</span>{<span class="dt">Applying</span> return}
+<span class="dt">Nothing</span>
+
+<span class="dt">Just</span> x <span class="fu">&gt;&gt;=</span> return
+<span class="fu">=</span>{<span class="dt">Applying</span> bind}
+return <span class="dt">Just</span> x
+<span class="fu">=</span>{<span class="dt">Applying</span> return}
+<span class="dt">Just</span> x</code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Associativity</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="dt">P</span>(<span class="dt">Nothing</span>)
+(<span class="dt">Nothing</span> <span class="fu">&gt;&gt;=</span> f) <span class="fu">&gt;&gt;=</span> g
+<span class="fu">=</span>{<span class="dt">Applying</span> bind}
+<span class="dt">Nothing</span> <span class="fu">&gt;&gt;=</span> g
+<span class="fu">=</span>{<span class="dt">Applying</span> bind}
+<span class="dt">Nothing</span>
+<span class="fu">=</span>{<span class="dt">Unapplying</span> bind}
+<span class="dt">Nothing</span> <span class="fu">&gt;&gt;=</span> (\x <span class="ot">-&gt;</span> f x)
+<span class="fu">=</span>{<span class="dt">Unapplying</span> bind}
+<span class="dt">Nothing</span> <span class="fu">&gt;&gt;=</span> (\x <span class="ot">-&gt;</span> f x <span class="fu">&gt;&gt;=</span> g)
+
+<span class="dt">P</span>(<span class="dt">Just</span> x)
+(<span class="dt">Just</span> x <span class="fu">&gt;&gt;=</span> f) <span class="fu">&gt;&gt;=</span> g
+<span class="fu">=</span>{<span class="dt">Applying</span> bind}
+f x <span class="fu">&gt;&gt;=</span> g
+<span class="fu">=</span>{<span class="dt">Applying</span> bind}
+f <span class="fu">.</span> g x
+<span class="fu">=</span>{<span class="dt">Unapplying</span> bind}
+<span class="dt">Just</span> x <span class="fu">&gt;&gt;=</span> (\x <span class="ot">-&gt;</span> f x)
+<span class="fu">=</span>{<span class="dt">Unapplying</span> bind}
+<span class="dt">Just</span> x <span class="fu">&gt;&gt;=</span> (\x <span class="ot">-&gt;</span> f x <span class="fu">&gt;&gt;=</span> g)</code></pre></div>
+</body>
+</html>
