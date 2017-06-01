@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../assets/github.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="exam-prep">Exam prep</h1>
+<h2 id="coursework-1-languages-and-stuff">Coursework 1 Languages and stuff</h2>
+<h3 id="question-1">Question 1</h3>
+<p>To define a language we must define two things. First we must define an alphabet in this example <span class="math inline">\(\Sigma = \{3,5,7,9\}\)</span> And the language can be define with the following style <span class="math inline">\(L= \{ w | w \in \Sigma , 1 \leq |w| \leq 2\}\)</span> As we can see here we have the definition of the language as all words composed by the $language with the word length delimited by the abs operator between 1 and 2 inclusive. If we would to enumerate all world in this language we would get something like.</p>
+<p><span class="math inline">\(L = \{3, 5, 7, 9, 33, 35, 37, 39, 53, 55, 57, 59, 73, 75, 77, 79, 93, 95, 97, 99\}\)</span></p>
+<p>This goes to show the importance of writing down comprehensive definitions instead of writing down every single possibility for languages such as this one.</p>
+<p>For a general language <span class="math inline">\(L_1\)</span> based on an arbitrary alphabet <span class="math inline">\(\Sigma_1 \text{and } 0 \leq m \leq n\)</span></p>
+<p>We can calculate the amount of possible words with the following formula.</p>
+<p><span class="math display">\[ |L_1| = \frac{|\Sigma_1|^m - |\Sigma_1|^n+1}{1-|\Sigma_1|}\]</span></p>
+<p>As we can see with this formula the number of possible words increases exponentially with the size of our words and even worse when we add letters to our alphabet.</p>
+<p>For a simple example assuming the following assuming our previous alphabet of 4 letters and a language with words between <span class="math inline">\(m = 3 and n = 7\)</span></p>
+<p><span class="math display">\[ |L_1| = \frac{4^3 - 4^7+1}{1-4}\]</span> <span class="math display">\[ |L_1| = \frac{64 - 65536}{-3}\]</span> <span class="math display">\[ |L_1| = 21824\]</span></p>
+<h3 id="question-2">Question 2</h3>
+<p>Let's take the following alphabet <span class="math inline">\(\Sigma = \{a,b,c\}\)</span> and <span class="math inline">\(L_1 = \{\epsilon,b,ac\}L_2 = \{a,b,ca\}\)</span></p>
+<p>Let's calculate the following languages</p>
+<p><span class="math inline">\(L_3 = L_1 \cup L_2\)</span></p>
+<p><span class="math inline">\(L_3 = \{\epsilon,a,b,ac,ca\}\)</span></p>
+<p><span class="math inline">\(L_4 = L_1\{\epsilon\} (L_2 \cap L_1)\)</span></p>
+<p><span class="math inline">\(L_4 = \{\epsilon,b,c\}\{\epsilon\} \{b\}\)</span></p>
+<p><span class="math inline">\(L_4 = \{\epsilon,b,c\} \{b\}\)</span></p>
+<p><span class="math inline">\(L_4 = \{b,bb,acb\} \{b\}\)</span></p>
+<p><span class="math inline">\(L_5 = L_3 \emptyset L_4\)</span></p>
+<p><span class="math inline">\(L_5 = \emptyset\)</span></p>
+<h3 id="question-3">Question 3</h3>
+<p>This regards a DFA a Deterministic finite automata. A Dfa is a machine that has a deterministic finite state. These contain a series of parameters.</p>
+<blockquote>
+<p>A DFA gets its name based on the fact that is deterministic, a word will always yield the same result as it will always start in the same state and one action can only result in one state change. This also means that if we are halfway through the execution of a word, we can backtrack all the previous steps. This is not the same for NFA Non-deterministic Finite automatas as those can have multiple starting states as well as multiple possibilities for the same input in a given state.</p>
+</blockquote>
+<p>DFA A:</p>
+<p><span class="math display">\[A = (Q_A = \{0,1,2,3\}),\Sigma,\delta_A,q_0 = 0,F_A =\{1,2\}\]</span> <span class="math display">\[\delta_A = \{((0, a), 1), ((0, b), 2), ((1, a), 0), ((1, b), 3), ((2, a), 3), ((2, b), 0), ((3, a), 2), ((3, b), 1)\}\]</span></p>
+<p>As we can see we have a couple things here. First we have all the state of the machine, followed by the alphabet, the transition function and the accepting states. The Transition function defines how the automata moves based on its current state and the input. Meanwhile the accepting states are all the states in which the automata is allowed to finish operation. This means that if a word is server as input and does not result in one of the accepting states, this means that this word does not belong to our language.</p>
+<p>Having this idea of finishing and non finishing states allow us to define a truth table by putting certain words through the system and seeing if the result in the correct states or not.</p>
+<p>Here is a small example of some words in this particular DFA.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Word</th>
+<th align="left">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\epsilon\)</span></td>
+<td align="left">false</td>
+</tr>
+<tr class="even">
+<td align="left">b</td>
+<td align="left">true</td>
+</tr>
+<tr class="odd">
+<td align="left">abaab</td>
+<td align="left">true</td>
+</tr>
+<tr class="even">
+<td align="left">bababbba</td>
+<td align="left">false</td>
+</tr>
+</tbody>
+</table>
+<h2 id="coursework-2-nfas-and-stuff">Coursework 2, NFA's and stuff</h2>
+<p>Given the following NFA over <span class="math inline">\(\Sigma_A = \{a,b,c\}\)</span></p>
+<div class="figure">
+<img src="img/nfa.png" alt="NFA 1" />
+<p class="caption">NFA 1</p>
+</div>
+<p>Find the truth table for the following words.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Word</th>
+<th align="left">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\epsilon\)</span></td>
+<td align="left">true</td>
+</tr>
+<tr class="even">
+<td align="left">aaa</td>
+<td align="left">true</td>
+</tr>
+<tr class="odd">
+<td align="left">bbc</td>
+<td align="left">true</td>
+</tr>
+<tr class="even">
+<td align="left">cbc</td>
+<td align="left">false</td>
+</tr>
+<tr class="odd">
+<td align="left">abcacb</td>
+<td align="left">true</td>
+</tr>
+</tbody>
+</table>
+<p>With subset construction we can assume the possibilities of a NFA instead of the actual states, this means we can construct a new version of the NFA based on possible states. This allows us to have a clearer picture of all possible routes. To do this we first start By defining all our states. Then Putting all the starting states as a single compound state. From then on we put every possible input through and generate a new compound state. This allows for the creation of compound states dynamically Instead of the creation of all permutations of states.</p>
+<h2 id="quesiton-2">Quesiton 2</h2>
+<p>Lets look at some examples of language construction based on some English expressions. Given the following alphabet <span class="math inline">\(\Sigma = \{a,b,c\}\)</span> Using regular expressions.<em>the fake ones</em></p>
+<ol style="list-style-type: decimal">
+<li>All words that contain exactly one a
+<ul>
+<li>(b+c)*a(b+c)*</li>
+</ul></li>
+<li>All words that contain at least two bs.
+<ul>
+<li>(a+c)*b(a+c)*b(a+b+c)*</li>
+</ul></li>
+<li>All words that contain at most two cs.
+<ul>
+<li>(a+b)*(<span class="math inline">\(\epsilon\)</span> + c(a+b)*)(<span class="math inline">\(\epsilon\)</span>+c(a+b)*)</li>
+</ul></li>
+</ol>
+<p>Using formal reasoning we can also revert this process given a regular expression we can calculate the matching result of possible words.</p>
+<p><span class="math display">\[L((aa+ \epsilon b * \emptyset)(b+c))\]</span> <span class="math display">\[L((aa) \cup (\epsilon b * \emptyset)(b+c))\]</span> <span class="math display">\[(L(aa) \cup L(\epsilon) L(b * )L(b+c))\]</span> <span class="math display">\[(L(a) L(a) \cup L(\epsilon) L(b * )L(b) \cup L(c))\]</span> <span class="math display">\[(L(a) L(a) \cup L(\epsilon) L(b * )L(b) \cup L(c))\]</span> <span class="math display">\[(\{a\},\{a\} \{b,c\})\]</span> <span class="math display">\[(\{a,a\}\{b,c\})\]</span> <span class="math display">\[(\{aab,aac\})\]</span></p>
+<p>Let's construct a NFA to evaluate the following regular expression. ((a+<span class="math inline">\(\epsilon\)</span>)(b+c))*</p>
+<p>Yeah I am not doing this one but you know you can do it if you want #glhf</p>
+<h1 id="language-and-computation-notes">Language and computation notes</h1>
+<h2 id="lecture-3---non-deterministic-finite-automata">Lecture 3 - Non-deterministic Finite Automata</h2>
+<p>Example: Construct DFA over <span class="math inline">\(\sum ={0,1}\)</span> accepting all works were penultimate symbol is 1</p>
+<p>Maybe: - q0 initial state - q1 initial Last symbol is 1 - q2 penultimate seen symbol is 1</p>
+<p>We define</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">-&gt;</span> (<span class="dv">0</span>,<span class="dv">1</span>) <span class="ot">-&gt;</span> q0 (<span class="dv">1</span>) <span class="ot">-&gt;</span> q1 (<span class="dv">0</span>,<span class="dv">1</span>) <span class="ot">-&gt;</span> q2</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Step</th>
+<th align="left">Input</th>
+<th align="left">State 1</th>
+<th align="left">State 2</th>
+<th align="left">State 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">x</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">x</td>
+<td align="left">x</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">x</td>
+<td align="left">x</td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">x</td>
+<td align="left"></td>
+<td align="left">x</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">x</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="defining-the-achine">Defining the achine</h2>
+<p>A NFA N = {Q,<span class="math inline">\(\sum\)</span>,<span class="math inline">\(\delta\)</span>, S, F} where</p>
+<ul>
+<li>Q: Finite set of states</li>
+<li><span class="math inline">\(\sum\)</span> : Alphabet</li>
+<li><span class="math inline">\(\delta\)</span> : Transitional function <span class="math inline">\(\delta \in Q . \sum -&gt; P(a)\)</span></li>
+</ul>
+</body>
+</html>

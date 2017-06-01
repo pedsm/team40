@@ -18,9 +18,9 @@ We define
 | Step| Input     | State 1 | State 2 | State 3|
 | :-- | :-------- | -----   | ------  | ------ |
 |  0  | 0         |   x     |         |        |
-|  1  | 1         |   x     |   x    |        |
+|  1  | 1         |   x     |   x     |        |
 |  2  | 1         |   x     |   x     |   x    |
-|  3  | 0         |   x     |         |   x   |
+|  3  | 0         |   x     |         |   x    |
 |  4  | 0         |   x     |         |        |
 
 ## Defining the achine
